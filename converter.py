@@ -28,12 +28,12 @@ flags.DEFINE_integer("max_tokens", default=400, help="LM max generation length")
 flags.DEFINE_string("engine", "code-davinci-002", help="GPT engines")
 
 
-def query_with_retry(inputs, max_retry=2):
+def query_with_retry(inputs, max_retry=30):
     """Queries GPT API up to max_retry time to get the responses."""
     request_completed = False
     current_retry = 0
-    outputs = ["ERROR"] * len(inputs)
-    while not request_completed and current_retry <= 2:
+    outputs = [['{"status": "ERROR"}']] * len(inputs)
+    while not request_completed and current_retry <= max_retry:
         try:
             response = openai.Completion.create(
                 engine=FLAGS.engine,
@@ -59,7 +59,7 @@ def query_with_retry(inputs, max_retry=2):
         except Exception as e:
             logging.warning(f"Error: {e}")
             # wait for token limit in the API
-            time.sleep(30)
+            time.sleep(10)
             current_retry += 1
     return outputs
 
@@ -88,7 +88,7 @@ def main(_):
         text_inputs.append(template.format(ocr_input=row["_source"]["text"]))
         raw_inputs.append(row)
 
-        if (index + 1) % 4 == 0 or index == len(raw_data) - 1:
+        if (index + 1) % 20 == 0 or index == len(raw_data) - 1:
             outputs = query_with_retry(text_inputs)
             with open(FLAGS.output_file, "a+") as handle:
                 for inp, addresses in zip(raw_inputs, outputs):
