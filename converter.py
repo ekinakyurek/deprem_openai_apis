@@ -1,12 +1,10 @@
 import json
 import os
-import openai
-from absl import app
-from absl import flags
-from absl import logging
 import time
+import backoff
+import openai
+from absl import app, flags, logging
 from tqdm import tqdm
-
 
 
 # openai.organization = os.getenv("OPENAI_API_ORGANIZATION")
@@ -23,12 +21,12 @@ flags.DEFINE_string("key_file", default=None, help="Openai key file")
 
 flags.DEFINE_string("output_file", default=None, help="Output file to write to")
 
-flags.DEFINE_integer("max_tokens", default=400, help="LM max generation length")
+flags.DEFINE_integer("max_tokens", default=384, help="LM max generation length")
 
-flags.DEFINE_string("engine", "code-davinci-002", help="GPT engines")
+flags.DEFINE_string("engine", "code-cushman-001", help="GPT engines")
 
 
-def query_with_retry(inputs, max_retry=30):
+def query_with_retry(inputs, max_retry=5):
     """Queries GPT API up to max_retry time to get the responses."""
     request_completed = False
     current_retry = 0
@@ -41,7 +39,7 @@ def query_with_retry(inputs, max_retry=30):
                 temperature=0,
                 max_tokens=FLAGS.max_tokens,
                 top_p=1,
-                frequency_penalty=0,
+                frequency_penalty=0.4,
                 presence_penalty=0,
                 stop="#END",
             )
@@ -56,17 +54,30 @@ def query_with_retry(inputs, max_retry=30):
                     ]
                 )
             request_completed = True
-        except Exception as e:
-            logging.warning(f"Error: {e}")
+            logging.info("request completed")            
+        except openai.error.RateLimitError as error:
+            logging.warning(f"Rate Limit Error: {error}")
             # wait for token limit in the API
-            time.sleep(10)
+            time.sleep(10 * current_retry)
+            current_retry += 1
+        except openai.error.InvalidRequestError as error:
+            logging.warning(f"Invalid Request: {error}")
+            # wait for token limit in the API
+            time.sleep(10 * current_retry)
             current_retry += 1
     return outputs
 
 
 def main(_):
-    openai.api_key = [el for el in open(FLAGS.key_file, "r")][0][:-1]
-    
+    with open(FLAGS.key_file) as handle:
+        api_key, *extras = handle.readlines()
+        
+    openai.api_key = api_key.strip()
+
+    if extras and len(extras[0]) > 1:
+        logging.info(extras[0])
+        openai.organization = extras[0].strip()
+
     with open(FLAGS.prompt_file) as handle:
         template = handle.read()
     # extract tweets from third columns
@@ -104,6 +115,8 @@ def main(_):
 
                         json_output = json.dumps(current_input)
                         handle.write(json_output + "\n")
+            text_inputs = []
+            raw_inputs = []
 
 
 if __name__ == "__main__":
