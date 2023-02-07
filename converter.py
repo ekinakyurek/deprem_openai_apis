@@ -7,9 +7,9 @@ from absl import logging
 import time
 from tqdm import tqdm
 
-openai.api_key = os.getenv("OPENAI_API_KEY")
 
-openai.organization = os.getenv("OPENAI_API_ORGANIZATION")
+
+# openai.organization = os.getenv("OPENAI_API_ORGANIZATION")
 
 FLAGS = flags.FLAGS
 
@@ -18,6 +18,8 @@ flags.DEFINE_string(
 )
 
 flags.DEFINE_string("input_file", default=None, help="Input file to read data")
+
+flags.DEFINE_string("key_file", default=None, help="Openai key file")
 
 flags.DEFINE_string("output_file", default=None, help="Output file to write to")
 
@@ -63,6 +65,8 @@ def query_with_retry(inputs, max_retry=2):
 
 
 def main(_):
+    openai.api_key = [el for el in open(FLAGS.key_file, "r")][0][:-1]
+    
     with open(FLAGS.prompt_file) as handle:
         template = handle.read()
     # extract tweets from third columns
