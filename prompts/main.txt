@@ -23,23 +23,6 @@ Output:
 
 Input: 
 """
-"RT @SergenDikkatli: Hava şartları gereği çalışmaların durdurulduğu haberini aldık. Halen destek bekleniyor. Yetkililerden acil yardım talep ediyoruz. 
-Şehit Abdullah Çavuş Mah.
-İsmet Karaokur Bulvarı 
-Palmiye Site/Apartmansi B Blok 
-Onikişubat/K.Maraş
-Kadriye Korucu
-Eylül Korucu
-Zehra Dikkatli
-#deprem @ahbap"
-"""
-
-Output: 
-{{"province": "Kahramanmaraş", "city": "Onikişubat", "Mahalle/Bulvar": "Şehit Abdullah Çavuş Mahallesi", "Sokak": "İsmet Karaokur Bulvarı", "Site/Apartman": "Palmiye Site/Apartmansi", "No/Blok": "B Blok", "Kat": "", "phone": "", "names": "Kadriye Korucu, Eylül Korucu, Zehra Dikkatli"}}
-#END
-
-Input: 
-"""
  "RT @motorsportcomtr: 🚨 AİLE GÖÇÜK ALTINDA!
 
 Güneşli Mah. Mehmet Ali Güler Cad. No/8 Elbistan Maraş  
