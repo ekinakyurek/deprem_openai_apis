@@ -18,7 +18,7 @@ GÖÇÜK ALTINDALAR!!!
 """
 
 Output: 
-{{'city': 'Hatay', 'distinct': 'İskenderun', 'neighbourhood': 'Mustafa Kemal Mahallesi', 'street': '544 Sokak', 'no': '11', 'apartment_name':'' ,'tel': '', 'names': ['Selahattin Yurt', 'Dudu Yurt', 'Sezer Yurt']}}
+{{"city": "Hatay", "distinct": "İskenderun", "neighbourhood": "Mustafa Kemal Mahallesi", "street": "544 Sokak", "no": "11", "building_name":"" ,"phone": "", "names": ["Selahattin Yurt", "Dudu Yurt", "Sezer Yurt"]}}
 #END
 
 Input: 
@@ -35,7 +35,7 @@ Zehra Dikkatli
 """
 
 Output: 
-{{'city': 'Kahramanmaraş', 'distinct': 'Onikişubat', 'neighbourhood': 'Şehit Abdullah Çavuş Mahallesi', 'street': 'İsmet Karaokur Bulvarı', 'apartment_name':'Palmiye Sitesi', 'no': 'B Blok', 'tel': '', 'names': ['Kadriye Korucu', 'Eylül Korucu', 'Zehra Dikkatli']}}
+{{"city": "Kahramanmaraş", "distinct": "Onikişubat", "neighbourhood": "Şehit Abdullah Çavuş Mahallesi", "street": "İsmet Karaokur Bulvarı", "building_name": "Palmiye Sitesi", "no": "B Blok", "floor": "", "phone": "", "names": ["Kadriye Korucu", "Eylül Korucu", "Zehra Dikkatli"]}}
 #END
 
 Input: 
@@ -58,8 +58,8 @@ Yeni Sanayi Mahallesi 2810 Sokak Zümrüt Apt Adıyaman/Merkez
 """
 
 Output: 
-{{'city': 'Kahramanmaraş', 'distinct': 'Elbistan', 'neighbourhood': 'Güneşli Mahallesi', 'street': 'Ali Güler Caddesi', 'apartment_name': '', 'no': '8', 'tel': '', 'names': ['Yasin Karadaş']}}
-{{'city': 'Adıyaman', 'distinct': 'Merkez', 'neighbourhood': 'Yeni Sanayi Mahallesi', 'street': '2810 Sokak', 'apartment_name': 'Zümrüt Apartmanı', 'no': '', 'tel': '0532 511 5538', 'names': ['Yasin', 'Fatma Çakır']}}
+{{"city": "Kahramanmaraş", "distinct": "Elbistan", "neighbourhood": "Güneşli Mahallesi", "street": "Ali Güler Caddesi", "building_name": "", "no": "8", "floor": "", "phone": "", "names": ["Yasin Karadaş"]}}
+{{"city": "Adıyaman", "distinct": "Merkez", "neighbourhood": "Yeni Sanayi Mahallesi", "street": "2810 Sokak", "building_name": "Zümrüt Apartmanı", "no": "", "floor": "", "phone": "0532 511 5538", "names": ["Yasin", "Fatma Çakır"]}}
 #END
 
 Input: 
@@ -76,7 +76,7 @@ Lütfen yardım edin, arkadaşları Izmir'den ulaştı. Görüntüler 04.45 saat
 """
 
 Output: 
-{{'city': 'Kahramanmaraş', 'distinct': 'Onikişubat', 'neighbourhood': 'Cebrail Mahallesi', 'street': '3203 Sokak', 'apartment_name': 'Kent Apartmanı', 'no': 'Blok 1', 'tel': '', 'names': []}}
+{{"city": "Kahramanmaraş", "distinct": "Onikişubat", "neighbourhood": "Cebrail Mahallesi", "street": "3203 Sokak", "building_name": "Kent Apartmanı", "no": "Blok 1", "floor": "3", "phone": "", "names": []}}
 #END
 
 Input:
