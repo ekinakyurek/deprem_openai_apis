@@ -2,7 +2,7 @@
 
 NUMKEY=5
 BASE_PATH="/project/llamagrp/feyza/address_parser/output"
-INPUTFILE="data/test.json"
+INPUTFILE="data/data.json"
 
 # First split data into separate files
 python data_split.py --input_file $INPUTFILE --key_num $NUMKEY --output_dir data
