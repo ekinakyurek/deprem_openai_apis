@@ -36,10 +36,10 @@ def query_with_retry(inputs, max_retry=5):
             response = openai.Completion.create(
                 engine=FLAGS.engine,
                 prompt=inputs,
-                temperature=0,
+                temperature=0.1,
                 max_tokens=FLAGS.max_tokens,
                 top_p=1,
-                frequency_penalty=0.4,
+                frequency_penalty=0.3,
                 presence_penalty=0,
                 stop="#END",
             )

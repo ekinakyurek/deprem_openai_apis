@@ -2,6 +2,11 @@
 
 # Provinces: Gaziantep (Antep), Kahramanmaraş (Maraş), Hatay, Osmaniye, Adıyaman, Malatya, Batman, Bingöl, Elazığ, Kilis, Diyarbakır, Mardin, Siirt, Şırnak, Van, Muş, Bitlis, Hakkari, Adana
 
+# Acronyms:
+- mah., Mah. => mahallesi
+- sok., Sok. => sokak
+- cad., Cad. => caddesi
+
 # Examples: 
 
 Input: 
@@ -18,7 +23,7 @@ GÖÇÜK ALTINDALAR!!!
 """
 
 Output: 
-{{"province": "Hatay", "city": "İskenderun", "Mahalle/Bulvar": "Mustafa Kemal Mahallesi", "Sokak": "544 Sokak", "No/Blok": "11", "Site/Apartman":"" ,"phone": "", "names": "Selahattin Yurt, Dudu Yurt, Sezer Yurt"}}
+{{"province": "Hatay", "city": "İskenderun", "mahallesi | bulvarı": "Mustafa Kemal Mahallesi", "sokak | caddesi | yolu": "544 Sokak", "no | blok": "11", "sitesi | apartmanı":"" ,"phone": "", "isimler": "Selahattin Yurt, Dudu Yurt, Sezer Yurt"}}
 #END
 
 Input: 
@@ -33,7 +38,7 @@ Güneşli Mah. Mehmet Ali Güler Cad. No/8 Elbistan Maraş
 
 🚨 YARDIM BEKLİYORLAR!
 
-Yeni Sanayi Mahallesi 2810 Sokak Zümrüt Apt Adıyaman/Merkez
+Yeni Sanayi Mah. 2810 Sokak Zümrüt Apt Adıyaman/Merkez
 
 🔸 Yasin, Fatma Çakır
 
@@ -41,15 +46,15 @@ Yeni Sanayi Mahallesi 2810 Sokak Zümrüt Apt Adıyaman/Merkez
 """
 
 Output: 
-{{"province": "Kahramanmaraş", "city": "Elbistan", "Mahalle/Bulvar": "Güneşli Mahallesi", "Sokak": "Ali Güler Caddesi", "Site/Apartman": "", "No/Blok": "8", "Kat": "", "phone": "", "names": "Yasin Karadaş"}}
-{{"province": "Adıyaman", "city": "Merkez", "Mahalle/Bulvar": "Yeni Sanayi Mahallesi", "Sokak": "2810 Sokak", "Site/Apartman": "Zümrüt Apartmanı", "No/Blok": "", "Kat": "", "phone": "0532 511 5538", "names": "Yasin, Fatma Çakır"}}
+{{"province": "Kahramanmaraş", "city": "Elbistan", "mahallesi | bulvarı": "Güneşli Mahallesi", "sokak | caddesi | yolu": "Ali Güler Caddesi", "sitesi | apartmanı": "", "no | blok": "8", "kat": "", "phone": "", "isimler": "Yasin Karadaş"}}
+{{"province": "Adıyaman", "city": "Merkez", "mahallesi | bulvarı": "Yeni Sanayi Mahallesi", "sokak | caddesi | yolu": "2810 Sokak", "sitesi | apartmanı": "Zümrüt Apartmanı", "no | blok": "", "kat": "", "phone": "0532 511 5538", "isimler": "Yasin, Fatma Çakır"}}
 #END
 
 Input: 
 """
 "RT @zhr_grc: #hatayyardimbekliyor
 #deprem #Turkey #Hatay #ohal #sondakikadeprem @ahbap 
-Cebrail mah.
+Cebrail Mah.
  3203 sokak
 Kent apartmani
  Blok no1
@@ -59,7 +64,19 @@ Lütfen yardım edin, arkadaşları Izmir'den ulaştı. Görüntüler 04.45 saat
 """
 
 Output: 
-{{"province": "Kahramanmaraş", "city": "Onikişubat", "Mahalle/Bulvar": "Cebrail Mahallesi", "Sokak": "3203 Sokak", "Site/Apartman": "Kent Apartmanı", "No/Blok": "Blok 1", "Kat": "3", "phone": "", "names": ""}}
+{{"province": "Kahramanmaraş", "city": "Onikişubat", "mahallesi | bulvarı": "Cebrail Mahallesi", "sokak | caddesi | yolu": "3203 Sokak", "sitesi | apartmanı": "Kent Apartmanı", "no | blok": "Blok 1", "kat": "3", "phone": "", "isimler": ""}}
+#END
+
+"""
+Input: LÜTFEN YAYIN!!!!
+8 katlı bina HATAYDA 
+
+Odabaşı mah. Uğur Mumcu caddesi no 4 Mahmut Karakaş kat 4 
+
+ ENKAZ ALT… https://t.co/zxlJYZlOBD 
+"""
+Output:
+{{"province": "Hatay", "city": "Hatay", "mahallesi | bulvarı": "Odabaşı Mahallesi", "sokak | caddesi | yolu": "Uğur Mumcu Caddesi", "sitesi | apartmanı": "", "no | blok": "4", "kat": "4", "phone": "", "isimler": "Mahmut Karakaş"}}
 #END
 
 Input:
