@@ -1,4 +1,4 @@
-# Address Extractor
+# Address and Intent Extractor
 
 The code can extract adresses from raw Turkiye earthquake tweets and classify them for intent via OpenAI GPT Codex API by using few-shot prompting.
 
