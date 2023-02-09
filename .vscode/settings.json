@@ -19,5 +19,6 @@
         "editor.codeActionsOnSave": {
             "source.organizeImports": true
         }
-    }
+    },
+    "python.linting.pylintEnabled": false
 }
