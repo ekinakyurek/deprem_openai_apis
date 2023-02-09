@@ -13,11 +13,13 @@ export OPENAI_API_KEY_POOL=key1,key2,key3...
 export GEO_KEY_POOL=key1,key2
 ```
 
+To extract the geo location address information:
 - Specify your paths in [run_addres.sh](./run_address.sh), then run the script
 ```SHELL
 ./run_address.sh
 ```
 
+To extract the intent information:
 - Specify your paths in [run_intent.sh](./run_intent.sh), then run the script.
 ```SHELL
 ./run_intent.sh
