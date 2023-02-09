@@ -1,15 +1,8 @@
 #!/bin/bash
-EXP_NAME="intent"
+EXP_NAME="intent_test"
 BASE_PATH="/home/akyurek/deprem/"
 INPUTFILE="data/test.jsonl"
 NUMKEY=5
-
-# # First split data into separate files
-# mkdir -p data/${EXP_NAME}/
-# python data_split.py --input_file $INPUTFILE --key_num $NUMKEY --output_dir data/${EXP_NAME}/
-
-# Then run the converter
-
 
 for i in $(seq 0 $((NUMKEY-1)));
 do

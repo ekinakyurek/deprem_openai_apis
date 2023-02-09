@@ -2,15 +2,12 @@ import json
 import os
 import time
 import urllib
-import backoff
 import openai
 import requests
 import re
 from absl import app, flags, logging
 from tqdm import tqdm
 
-
-# openai.organization = os.getenv("OPENAI_API_ORGANIZATION")
 
 FLAGS = flags.FLAGS
 
@@ -19,8 +16,6 @@ flags.DEFINE_string(
 )
 
 flags.DEFINE_string("input_file", default=None, help="Input file to read data")
-
-# flags.DEFINE_string("key_file", default=None, help="Openai key file")
 
 flags.DEFINE_string("output_file", default=None, help="Output file to write to")
 
@@ -42,6 +37,7 @@ flags.DEFINE_string("engine", "code-cushman-001", help="GPT engines")
 
 GEO_BASE_URL = "https://maps.googleapis.com/maps/api/geocode/json?"
 
+# TODO: add more keywords.
 NON_ADDRESS_WORDS = [
     "arkadaş",
     "bebek",
@@ -60,7 +56,7 @@ NON_ADDRESS_WORDS = [
 
 
 def postprocess_for_address(address):
-    # small rule based filtering
+    # a quick rule based filtering for badly parsed outputs.
     address = json.loads(address)
     if type(address) == dict:
         for key in (
@@ -205,15 +201,6 @@ def get_geo_result(key, address):
 
 
 def main(_):
-    # with open(FLAGS.key_file) as handle:
-    #     api_key, *extras = handle.readlines()
-
-    # openai.api_key = api_key.strip()
-
-    # if extras and len(extras[0]) > 1:
-    #     logging.info(extras[0])
-    #     openai.organization = extras[0].strip()
-
     setup_openai()
     if FLAGS.geo_location:
         geo_key = setup_geocoding()
@@ -221,28 +208,18 @@ def main(_):
     with open(FLAGS.prompt_file) as handle:
         template = handle.read()
 
-    # extract tweets from third columns
-    # raw_data = pd.read_csv(FLAGS.input_file)
-
     with open(FLAGS.input_file) as handle:
-        # raw_data = json.load(handle)["hits"]["hits"]
-        #raw_data = json.load(handle)
         raw_data = [json.loads(line.strip()) for line in handle]
         split_size = len(raw_data) // FLAGS.num_workers
         raw_data = raw_data[
             FLAGS.worker_id * split_size : (FLAGS.worker_id + 1) * split_size
         ]
-        # raw_data = [json.loads(line)["input"] for line in handle]
 
     logging.info(f"Length of the data for this worker is {len(raw_data)}")
     text_inputs = []
     raw_inputs = []
 
-    # if os.file.exists(FLAGS.output_file):
-    #     os.error("Output file exists!")
-
     for index, row in tqdm(enumerate(raw_data)):
-        # third columns is the tweet?
         text_inputs.append(template.format(ocr_input=row["Tweet"]))
         raw_inputs.append(row)
 

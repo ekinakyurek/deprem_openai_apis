@@ -4,7 +4,7 @@ The code can extract adresses from raw Turkiye earthquake tweets and classify th
 
 # How To Run
 
-Currently the input format is `.jsonl` where each line has a json string with "Tweet" field, see an example input file here [data/](./data/test.jsonl).
+Currently the input format is `.jsonl` where each line has a json string with "Tweet" field, see an example input file here [data/test.jsonl](./data/test.jsonl).
 
 Export two environment variables as comma seperated keys:
 
