@@ -1,12 +1,24 @@
 # Address Extractor
 
-The code extracts and parses adresses from raw tweets via OpenAI GPT Codex API by using few-shot prompting.
+The code can extract adresses from raw Turkiye earthquake tweets and classify them for intent via OpenAI GPT Codex API by using few-shot prompting.
 
 # How To Run
 
-Currently input format is `.jsonl` with `{"input": tweet_text}`, see an example input file here [data/](./data/)
+Currently the input format is `.jsonl` where each line has a json string with "Tweet" field, see an example input file here [data/](./data/test.jsonl).
 
-- Run the converter
+Export two environment variables as comma seperated keys:
+
+```SHELL
+export OPENAI_API_KEY_POOL=key1,key2,key3...
+export GEO_KEY_POOL=key1,key2
 ```
-python converter.py --prompt_file prompts/main.txt --input_file data/test.jsonl --output_file output.jsonl --key_file PATH_TO_KEY
+
+- Specify your paths in [run_addres.sh](./run_address.sh)), then run the script
+```SHELL
+./run_address.sh
+```
+
+- Specify your paths in [run_intent.sh](./run_intent.sh)), then run the script.
+```SHELL
+./run_intent.sh
 ```

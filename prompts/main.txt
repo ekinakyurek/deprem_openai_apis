@@ -4,8 +4,9 @@
 
 # Acronyms:
 - mah., Mah. => mahallesi
-- sok., Sok. => sokak
+- sok., Sok., Sk. => sokak
 - cad., Cad. => caddesi
+- apt., Apt => apartmanı
 
 # Examples: 
 
@@ -67,16 +68,27 @@ Output:
 {{"province": "Kahramanmaraş", "city": "Onikişubat", "mahallesi | bulvarı": "Cebrail Mahallesi", "sokak | caddesi | yolu": "3203 Sokak", "sitesi | apartmanı": "Kent Apartmanı", "no | blok": "Blok 1", "kat": "3", "phone": "", "isimler": ""}}
 #END
 
+Input:
 """
-Input: LÜTFEN YAYIN!!!!
+LÜTFEN YAYIN!!!!
 8 katlı bina HATAYDA 
 
 Odabaşı mah. Uğur Mumcu caddesi no 4 Mahmut Karakaş kat 4 
 
  ENKAZ ALT… https://t.co/zxlJYZlOBD 
 """
+
 Output:
 {{"province": "Hatay", "city": "Hatay", "mahallesi | bulvarı": "Odabaşı Mahallesi", "sokak | caddesi | yolu": "Uğur Mumcu Caddesi", "sitesi | apartmanı": "", "no | blok": "4", "kat": "4", "phone": "", "isimler": "Mahmut Karakaş"}}
+#END
+
+Input:
+"""
+Hatay samandag cumhuriyet mahallesi kiz meslek karşısı cok kötü bina da bsbek var lutfen#deprem
+"""
+
+Output:
+{{"province": "Hatay", "city": "Samandağ", "mahallesi | bulvarı": "Cumhuriyet Mahallesi", "sokak | caddesi | yolu": "", "sitesi | apartmanı": "Kız Meslesk Karşısı", "no | blok": "", "kat": "", "phone": "", "isimler": "bebek"}}
 #END
 
 Input:
