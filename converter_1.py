@@ -193,9 +193,6 @@ class Converter:
         outputs = self.query_with_retry(text_inputs)
         returned = []
         for output in outputs:
-            print("this is the output")
-            print(output)
-            print("this is the output")
             returned_dict = {}
             returned_dict["string"] = output
             try:
