@@ -49,65 +49,157 @@ The tweet says that some people people are calling for construction workers to h
 
 Intput:
 """
-Kahramanmaraş/ Göksun Büyükkızılcık köyü 2 engelli çocuk var çocuklar çok üşümüş su sıkıntısı yaşıyorlar +90 552 930 71 56 
+İstanbul Küçükçekmece Arenapark AVM insan gücü lazım koliler var. Teyitli bizzat kendim yardımda idim sınava yetişmem gerekiyor.@AFADBaskanlik @ahbap_istanbul
 """
 
 Output:
-The tweet says that some people needs water (su) and they are getting cold (üşümek), so it is [SU]
+The tweet says that some people need help with workforce(insan gücü) to help with parcels(koliler), so it is [Lojistik]
 #END
 
 Intput:
 """
-İletişim: Ahmet Kara - 5523550002
-Adres: Kahramanmaraş Pazarcık 
-Mesaj: Su ve erzağa ihtiyacımız var 
-https://t.co/v6ZteOPatj
-@afadbaskanlik @akut_dernegi @ahbap @haluklevent #depremAdres
+"ACİL/TEYİTLİ ‼️‼️Hatay/Antakya Harbiyede yakıtı biten, donmak üzere olan aile var. Onları Necmi Asfuroğlu Lisesine götürecek biri lazım. İletişim Müjde Karaoğlan- 05343588784 Ortalama 5-10km'lik yol. Donmak üzerelermiş.AKÜ LAZIM 2021 FİORİNO ARACINA AKÜ LAZIM"
 """
 
 Output:
-The tweet says that some people needs water (su) and they are getting cold (üşümek), so it is [SU]
+The tweet says that some people need transportation(götürecek, nakliyat), so it is [Lojistik]
 #END
 
 Intput:
 """
-uberkuloz #depremadres 
-
-https://t.co/cWw159i2U0
-
-Kahramanmaraş Onikişubat 34029. Sokak Vehbi Aslan Türk Camii, depremzedeler gıda yardımı bekliyor.
-#HalukLevent @OguzhanUgur @haluklevent @deprem @AFADBaskanlik
+yagma talan saldırısı varmış duyumlara göre acil güvenlik tedbirleri acill!! halkın can ve mal güvenligi sizlerin ve içişlerinin görev alanıdır,syn,
 """
 
 Output:
-The tweet says people need food gıda [GIDA]
+The tweet says that some people are looting(yagma), so it is [Yagma]
 #END
 
 Intput:
 """
-https://t.co/UYYsCRhhxr
-#depremadres
-KAHRAMANMARAŞ KADIOĞLU ÇİFTLİĞİNE BATTANİYE KIYAFET ACİL ISINMAYA İHTİYAÇLARI VAR
-TEL: 0537 232 4512
-@AFADBaskanlik
+Syn başkanım bu da yağma yapıyormuş Hatayspor asbaşkanı söylüyor bu konuyu gündeme getirin
 """
 
 Output: 
-The tweet says that people need blankets(battaniye)[GIYSI]
+The tweet says that some people are looting(yagma), so it is [Yagma]
 #END
 
 Intput:
 """
-https://t.co/UYYsCRhhxr
-#depremadres
-KAHRAMANMARAŞ KADIOĞLU ÇİFTLİĞİNE BATTANİYE KIYAFET ACİL ISINMAYA İHTİYAÇLARI VAR
-TEL: 0537 232 4512
-@AFADBaskanlik
+@haluklevent Malatya Yeşilyurt gözene köyüne acil gıda ve giyim malzemeleri gerekiyor hayvan çadırında kalıyorlar kar olduğu için yardım yerlerine ulaşamıyorlar lütfen yardım edin @OguzhanUgur @ahbap @AFADBaskanlik @_devrimozkan
 """
 
 Output: 
-The tweet says that people need blankets(battaniye)[GIYSI]
+This tweet says that some poeple need clothes(giyim) food(gıda) tents(çadır) and water (su), so it is ['Yemek', 'Barinma', 'Giysi', 'Su']
 #END
+
+Intput:
+"""
+"Hassa/Hatay Erkek - Kadın çamaşır, çorap, battaniye temel yaşam ihtiyaçlarına çok fazla ihtiyaç var. Sizden ricam paylaşır mısınız ? HASSA/HATAY.@fehmilist"
+"""
+
+Output: 
+This tweet says that some poeple need clothes(çorap, battaniye) basics(temel yaşam), so it is ['Yemek', 'Barinma', 'Giysi', 'Su']
+#END
+
+Intput:
+"""
+"Bölgeden gelen ihtiyaç taleplerine göre; gıda kolisi, hijyen malzemesi, battaniye, el feneri, powerbank, çocuk bezi ve çocuk maması gibi ihtiyaç malzemelerinin toplanmasına devam edeceğiz.Bu kapsamda 2. el giyim malzemesi kabul edilmeyecektir."
+"""
+
+Output: 
+This tweet says that some poeple need hygiene items(hijyen malzemesi) blankets(battaniye), Flashlight(el feneri), powerbanks, diapers(çocuk bezi),  so it is ['Elektronik', 'Yemek', 'Barinma', 'Saglik', 'Su']
+#END
+
+Intput:
+"""
+ARKADAŞLAR LÜTFEN 20 kişilik aileye çadır lazım lütfen yardım edin
+"""
+
+Output: 
+This tweet says that 20 people need a tents(çadır), so it is ['Barinma']
+#END
+
+Intput:
+"""
+Mesaj Arkadaşlar hataydan yazıyorum acil çadır lazım kimsenin kalacak yeri yok konteynır kentler yetersiz kalıyor herkes dışarıda kalıyor varsa eğer yetkili birileri iletirmisiniz lütfen
+"""
+
+Output: 
+This tweet says that some poeple need tents (çadır) and that containers arent enough, so it is ['Barinma']
+#END
+
+Intput:
+"""
+HATAY ANTAKYA BÖBREK YETMEZLİĞİ 5 YAŞINDA ÇOCUK ACİL İLAÇ‼️‼️‼️Topamax 100 mg.Derince mah. Derince çıkmazı bölge trafik yaniHatay AntakyaAhmet Akşun: 05347056864-05322173303
+"""
+
+Output: 
+This tweet says that a 5 year old kid has kidney failure(BÖBREK YETMEZLİĞİ) and that they need medicine(Ilac, İLAÇ), so it is ['Saglik']
+#END
+
+Intput:
+"""
+çok acil kefen lazım hatay bölgesine çok sayıda kefen lazım insanları battaniyeyle gömüyorlarmış! #depremsondakika #deprem @BabalaTv https://t.co/msX1I35AWA
+"""
+
+Output: 
+This tweet says that some poeple need grave clothes(kefen), so it is ['Saglik']
+#END
+
+Intput:
+"""
+"Ve acil operatörlerin devreye girmesi lazım iletişim yok , konum paylaşımları yapılamıyor insanlara ulaşılamıyor. #hatay #deprem"
+"""
+
+Output: 
+This tweet says people can't communicate(iletişim yok) they can't share locations(konum), so it is ['Elektronik']
+#END
+
+Intput:
+"""
+❗ACİL VİNÇ VE TERMAL KAMERA❗Ekipler var ancak vinç ve acil termal kamera gerekiyor! Akevler Mah. 424. Sk Melis Apartmanı B Blok  #Antakya #hatay Kübra Palta +90 (541) 439 11 09
+"""
+
+Output: 
+This tweet says that some poeple need thermal cameras (TERMAL KAMERA), cranes(VINC) , so it is ['Elektronik']
+#END
+
+Intput:
+"""
+"Acil çok acil bu konuma gıda şimdi konuştum #depremsondakika @ProfDemirtas @ahbap @haluklevent @OguzhanUgur  maps.google.com/?q=36.095760,3…"
+"""
+
+Output: 
+This tweet says that some poeple need food(gıda, yemek), so it is ['Yemek']
+#END
+
+Intput:
+"""
+@BaranKk20 @karabekiroglu_s Abi herkes aynı şekilde Dulkadiroğlu belediyesi ön tarafı çok soğuk battaniye filan lazım bölgeden şuan gelen mesaj önemli hava çok soğuk olduğu için zor durumda kalmışlar
+"""
+
+Output: 
+This tweet says that some poeple need blankets(battaniye), so it is ['Yemek']
+#END
+
+Intput:
+"""
+"Acil çok acil bu konuma gıda şimdi konuştum #depremsondakika @ProfDemirtas @ahbap @haluklevent @OguzhanUgur  maps.google.com/?q=36.095760,3…"
+"""
+
+Output: 
+This tweet says that some poeple need food(gıda, yemek), so it is ['Giysi']
+#END
+
+Intput:
+"""
+@ProfDemirtas  @haluklevent ABİ SULARI YOKMUŞ.ERZAK İHTİYACI ACİL.
+"""
+
+Output: 
+This tweet says that some poeple need water(su, SULARI, Suya), so it is ['Su']
+#END
+
 Input:
 """
 {ocr_input}
