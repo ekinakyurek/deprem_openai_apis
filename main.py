@@ -79,9 +79,6 @@ def get_settings():
     return settings
 
 
-get_settings()
-
-
 def convert(
     info: str,
     inputs: List[str],
@@ -90,21 +87,30 @@ def convert(
 ):
     if info == "address":
         template = settings.address_template
-    else:
+        max_tokens = settings.address_max_tokens
+        temperature = 0.1
+        frequency_penalty = 0.3
+    elif info == "intent":
         template = settings.intent_template
+        max_tokens = settings.intent_max_tokens
+        temperature = 0.0
+        frequency_penalty = 0.0
+    else:
+        raise ValueError("Unknown info")
 
     text_inputs = []
     for tweet in inputs:
         text_inputs.append(template.format(ocr_input=tweet))
 
+    print(text_inputs)
     outputs = converter.query_with_retry(
         text_inputs,
         engine=settings.engine,
         prompt=text_inputs,
-        temperature=0.1,
-        max_tokens=settings.max_tokens,
+        temperature=temperature,
+        max_tokens=max_tokens,
         top_p=1,
-        frequency_penalty=0.3,
+        frequency_penalty=frequency_penalty,
         presence_penalty=0,
         stop="#END",
     )
