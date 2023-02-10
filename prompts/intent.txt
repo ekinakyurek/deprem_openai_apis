@@ -4,65 +4,47 @@
 
 Input: 
 """
-"RT @ukkuli: ACİL!!!
-İskenderun Hatay
-Mustafa Kemal mahallesi 544 sokak no:11 (Batı Göz hastanesi sokağı)
-
-Selahattin Yurt
-Dudu Yurt
-Sezer Yurt
-GÖÇÜK ALTINDALAR!!!
-#DEPREMOLDU #depremhatay #deprem #Hatay #hatayacil #HatayaYardım #hataydepremi"
+Feyzanur Alkan YAŞIYOR ACİL YARIM SAAT ÖNCE SES GELMİŞ KURTARILMAYI BEKLİYOR🚨🚨🚨🚨🚨Atatürk Bulvarı Mehmet Akif Ersoy Mahallesi 505.Sokak No 1 Alkanlar Apartmanı Adıyaman/Merkez 544 423 49 43 - Adnan AlkanACİL HİLTİ İSPİRAL JENERATÖR LAZIM
 """
 
 Output: 
-The tweet says that some people under rubble (göçük/enkaz/yıkıntı), so it is [EARTHQUAKE VICTIM ALERT]
+The tweet says that some people are still alive(ses), so it is [KURTARMA]
 #END
 
 Input: 
 """
- "RT @motorsportcomtr: 🚨 AİLE GÖÇÜK ALTINDA!
+@muhammed0zkan @AFADBaskanlik @DepremDairesi @AKUT_Dernegi @KizilayDestek #depremadres
 
-Güneşli Mah. Mehmet Ali Güler Cad. No/8 Elbistan Maraş  
+https://t.co/FbCmDUSz5I
 
-🔸 Yasin Karadaş eşi ve iki çocuğu için yardım bekliyor 
+Ekip arkadaşlarımıza ulaşamıyoruz. Lütfen binalar kontrol edilsin. Hayrullah mah. Malik Ejder cad. Arıkan sit. A blok Kat:4 Kapı No:10 Onikişubat/Kahramanmaraş
 
-📞0532 511 5538 
-
-🚨 YARDIM BEKLİYORLAR!
-
-Yeni Sanayi Mah. 2810 Sokak Zümrüt Apt Adıyaman/Merkez
-
-🔸 Yasin, Fatma Çakır
-
-#deprem @ahbap
+@AFADBaskanlik 
+@DepremDairesi 
+@AKUT_Dernegi 
+@KizilayDestek
 """
 
 Output: 
-The tweet says that some multiple people under rubble (göçük/enkaz/yıkıntı), so it is [EARTHQUAKE VICTIM ALERT]
+The tweet says that some multiple people under rubble (göçük/enkaz/yıkıntı/ulaşamıyoruz), so it is [KURTARMA]
 #END
 
 Input: 
 """
-BİR ARKADAŞIMIZIN ARKADAŞI DM'DEN GELDİ YAYALIM ACİL İHTİYAÇ YARDIMI 
-Arkadaşım ve ailesinin olduğu bölgeye gıda yardımı yapılmış ama hala elektrik, su ve çadırları yok!!! 
-Adres: Aşağıkarafakılı Sokak 31700 HASSA/HATAY
+@Safderun42 Son dakika çoğu parti milletvekilleri bu ay ki maaşlarını deprem zedelere gönderme  kararı almış tebrik etmek lazım
 """
 
 Output:
-The tweet says that some people needs water (su) and tent (çadır), so it is [ESSENTIAL SUPPLY REQUEST]
+The tweet says that some prime misisters are donating salaries, so it is [Alakasiz]
 #END
 
 Input: 
 """
-1. Elazığ depremi. Deniz BAYKAL. 
-Pek çok yaralı ölen ve hayvan varlığı zarar gördü. Ciddi facia yaşandı. B
-ütün milletimize geçmiş olsun dileklerimizi iletiyoruz. 
-6 büyüklüğündeki depremde 51 ölü ciddi kayıptır. Bunu siyasete sokmadan milletçe atılması gereken adımları atmalıyız.
+Lütfen önerileri dikkate alınÜLKEMİZDEKİ DEMİR VE KALIP USTALARINI ACİL ACİL CAĞIRIN GERGİN DEMİR KESME USTALIK İŞİDİR LÜTFEN USTALARIMIZI AÇİL TOPLAYIN DEPREM SAHALARINA SEVK EDİN
 """
 
 Output:
-The tweet is mostly about a political leader (Deniz Baykal), so it is [POLITICAL]
+The tweet says that some people people are calling for construction workers to help, so it is [Alakasiz]
 #END
 
 Intput:
@@ -71,36 +53,61 @@ Kahramanmaraş/ Göksun Büyükkızılcık köyü 2 engelli çocuk var çocuklar
 """
 
 Output:
-The tweet says that some people needs water (su) and they are getting cold (üşümek), so it is [ESSENTIAL SUPPLY REQUEST]
+The tweet says that some people needs water (su) and they are getting cold (üşümek), so it is [SU]
 #END
 
 Intput:
 """
-General şükrü kanatlı mahallesi, atatürk caddesi, lale apart, Gs store üstü 2. kat HATAY/ANTAKYA Vinç lazım iş makinesi lazım Teyitli Bilgi 
+İletişim: Ahmet Kara - 5523550002
+Adres: Kahramanmaraş Pazarcık 
+Mesaj: Su ve erzağa ihtiyacımız var 
+https://t.co/v6ZteOPatj
+@afadbaskanlik @akut_dernegi @ahbap @haluklevent #depremAdres
 """
 
 Output:
-The tweet says people need machine for rubbles (crane (vinç)) [MACHINE REQUEST]
+The tweet says that some people needs water (su) and they are getting cold (üşümek), so it is [SU]
 #END
 
 Intput:
 """
-Kanatlı mahallesi kanatlı caddesi ikizler apt Antakya Hatay. Vinç kepçe yok. Sizden ricam gerekli yerlere ulaşmanız. Hala iyi haber yok. Muhtemelen merdivenlerde kaldı herkes. Diye düşünüyorum. Vinç kepçe lazım gerekli yerlere lütfen söyleyin 
+uberkuloz #depremadres 
+
+https://t.co/cWw159i2U0
+
+Kahramanmaraş Onikişubat 34029. Sokak Vehbi Aslan Türk Camii, depremzedeler gıda yardımı bekliyor.
+#HalukLevent @OguzhanUgur @haluklevent @deprem @AFADBaskanlik
 """
 
 Output:
-The tweet says people need machine for rubbles (crane (vinç), ladle (kepçe)) [MACHINE REQUEST]
+The tweet says people need food gıda [GIDA]
 #END
 
 Intput:
 """
-Mesaj ses geliyormuş lütfen yayalım Şazibey mahallesi stad caddesi yunus apartmanı B blok 12 Şubat Kahramanmaraş 
+https://t.co/UYYsCRhhxr
+#depremadres
+KAHRAMANMARAŞ KADIOĞLU ÇİFTLİĞİNE BATTANİYE KIYAFET ACİL ISINMAYA İHTİYAÇLARI VAR
+TEL: 0537 232 4512
+@AFADBaskanlik
 """
 
 Output: 
-The tweet says that some multiple people alive under rubble, so that they can make sound, so it is [EARTHQUAKE VICTIM ALERT]
+The tweet says that people need blankets(battaniye)[GIYSI]
 #END
 
+Intput:
+"""
+https://t.co/UYYsCRhhxr
+#depremadres
+KAHRAMANMARAŞ KADIOĞLU ÇİFTLİĞİNE BATTANİYE KIYAFET ACİL ISINMAYA İHTİYAÇLARI VAR
+TEL: 0537 232 4512
+@AFADBaskanlik
+"""
+
+Output: 
+The tweet says that people need blankets(battaniye)[GIYSI]
+#END
 Input:
 """
 {ocr_input}
