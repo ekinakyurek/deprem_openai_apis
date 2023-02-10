@@ -7,7 +7,7 @@ from model_requests import RequestAddress
 app = FastAPI()
 
 
-@app.post("/address-extractor/{addess}")
+@app.post("/address-extractor")
 async def address(payload: RequestAddress):
     inputs = payload.dict()["text"]
     converter = Converter(inputs=inputs, pid=int(os.getpid()), info="address")
