@@ -7,7 +7,7 @@ import requests
 import re
 from absl import app, flags, logging
 from tqdm import tqdm
-
+import pdb
 
 FLAGS = flags.FLAGS
 
@@ -82,16 +82,16 @@ def postprocess_for_address(address):
 
 
 TAG_MAP = {
-    "ELECTRONICS": "elektronik",
-    "WATER": "su",
-    "LOGISTICS": "lojistics",
-    "FOOD": "yiyecek",
-    "RESCUE": "kurtarma",
-    "HEALTH": "sağlık",
-    "UNRELATED": "alakasız",
-    "SHELTER": "barınma",
-    "LOOTING": "yağma",
-    "CLOTHING": "giyecek",
+    "ELECTRONICS": "Elektronik",
+    "WATER": "Su",
+    "LOGISTICS": "Lojistik",
+    "FOOD": "Yemek",
+    "RESCUE": "Kurtarma",
+    "HEALTH": "Saglik",
+    "UNINFORMATIVE": "Alakasiz",
+    "SHELTER": "Barinma",
+    "LOOTING": "Yagma",
+    "CLOTHING": "Giysi",
 }
 
 
@@ -137,6 +137,7 @@ def query_with_retry(inputs, max_retry=5, **kwargs):
     while not request_completed and current_retry <= max_retry:
         try:
             response = openai.Completion.create(
+                prompt=inputs,
                 **kwargs,
             )
             current_outputs = response["choices"]
@@ -150,7 +151,6 @@ def query_with_retry(inputs, max_retry=5, **kwargs):
                     ]
                 )
             request_completed = True
-            logging.info("request completed")
         except openai.error.RateLimitError as error:
             logging.warning(f"Rate Limit Error: {error}")
             # wait for token limit in the API
@@ -217,8 +217,18 @@ def main(_):
     with open(FLAGS.prompt_file) as handle:
         template = handle.read()
 
+    if FLAGS.info == "address":
+        temperature = 0.1
+        frequency_penalty = 0.3
+    elif FLAGS.info == "intent":
+        temperature = 0.0
+        frequency_penalty = 0.0
+    else:
+        raise ValueError("Unknown info")
+
     with open(FLAGS.input_file) as handle:
-        raw_data = [json.loads(line.strip()) for line in handle]
+        # raw_data = [json.loads(line.strip()) for line in handle]
+        raw_data = json.load(handle)
         split_size = len(raw_data) // FLAGS.num_workers
         raw_data = raw_data[
             FLAGS.worker_id * split_size : (FLAGS.worker_id + 1) * split_size
@@ -229,47 +239,48 @@ def main(_):
     raw_inputs = []
 
     for index, row in tqdm(enumerate(raw_data)):
-        text_inputs.append(template.format(ocr_input=row["Tweet"]))
+        # text_inputs.append(template.format(ocr_input=row["Tweet"]))
+        text_inputs.append(template.format(ocr_input=row["text_cleaned"]))
         raw_inputs.append(row)
 
         if (index + 1) % FLAGS.batch_size == 0 or index == len(raw_data) - 1:
             outputs = query_with_retry(
                 text_inputs,
                 engine=FLAGS.engine,
-                prompt=inputs,
-                temperature=0.1,
+                temperature=temperature,
                 max_tokens=FLAGS.max_tokens,
                 top_p=1,
-                frequency_penalty=0.3,
+                frequency_penalty=frequency_penalty,
                 presence_penalty=0,
                 stop="#END",
             )
 
             with open(FLAGS.output_file, "a+") as handle:
                 for inp, output_lines in zip(raw_inputs, outputs):
-                    for output_line in output_lines:
-                        current_input = inp.copy()
-                        try:
-                            current_input[FLAGS.info + "_json"] = postprocess(
-                                FLAGS.info, output_line
-                            )
-                            current_input[FLAGS.info + "_str"] = ""
-                        except Exception as e:
-                            logging.warning(f"Parsing error in {output_line},\n {e}")
-                            current_input[FLAGS.info + "_json"] = {}
-                            current_input[FLAGS.info + "_str"] = output_line
+                    # for output_line in output_lines:
+                    output_line = output_lines[0]
+                    current_input = inp.copy()
+                    try:
+                        current_input[FLAGS.info + "_json"] = postprocess(
+                            FLAGS.info, output_line
+                        )
+                        current_input[FLAGS.info + "_str"] = output_line
+                    except Exception as e:
+                        logging.warning(f"Parsing error in {output_line},\n {e}")
+                        current_input[FLAGS.info + "_json"] = {}
+                        current_input[FLAGS.info + "_str"] = output_line
 
-                        if (
-                            FLAGS.info == "address"
-                            and FLAGS.geo_location
-                            and type(current_input[FLAGS.info + "_json"]) == dict
-                        ):
-                            current_input["geo"] = get_geo_result(
-                                geo_key, current_input[FLAGS.info + "_json"]
-                            )
+                    if (
+                        FLAGS.info == "address"
+                        and FLAGS.geo_location
+                        and type(current_input[FLAGS.info + "_json"]) == dict
+                    ):
+                        current_input["geo"] = get_geo_result(
+                            geo_key, current_input[FLAGS.info + "_json"]
+                        )
 
-                        json_output = json.dumps(current_input)
-                        handle.write(json_output + "\n")
+                    json_output = json.dumps(current_input)
+                    handle.write(json_output + "\n")
 
             text_inputs = []
             raw_inputs = []

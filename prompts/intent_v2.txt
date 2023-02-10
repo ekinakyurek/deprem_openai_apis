@@ -2,11 +2,11 @@
 
 Input: 
 """
-Feyzanur Alkan YAŞIYOR ACİL YARIM SAAT ÖNCE SES GELMİŞ KURTARILMAYI BEKLİYOR🚨🚨🚨🚨🚨Atatürk Bulvarı Mehmet Akif Ersoy Mahallesi 505.Sokak No 1 Alkanlar Apartmanı Adıyaman/Merkez 544 423 49 43 - Adnan AlkanACİL HİLTİ İSPİRAL JENERATÖR LAZIM
+Feyzanur Alkan YAŞIYOR ACİL YARIM SAAT ÖNCE SES GELMİŞ KURTARILMAYI BEKLİYOR. Atatürk Bulvarı Mehmet Akif Ersoy Mahallesi 505.Sokak No 1 Alkanlar Apartmanı Adıyaman/Merkez - Adnan AlkanACİL HİLTİ İSPİRAL JENERATÖR LAZIM
 """
 
-Output: 
-The tweet says that some people are still alive(ses), so it is [RESCUE]
+Summary: 
+Some people are still alive, and need for generator, tags are [RESCUE, ELECTRONICS]
 #END
 
 Input: 
@@ -14,8 +14,8 @@ Input:
 Lütfen önerileri dikkate alınÜLKEMİZDEKİ DEMİR VE KALIP USTALARINI ACİL ACİL CAĞIRIN GERGİN DEMİR KESME USTALIK İŞİDİR LÜTFEN USTALARIMIZI AÇİL TOPLAYIN DEPREM SAHALARINA SEVK EDİN
 """
 
-Output:
-The tweet says that some people people are calling for construction workers to help, so it is [UNRELATED]
+Summary:
+Some people people are calling for construction workers to help, tags are [WORKER_NEEDED]
 #END
 
 Intput:
@@ -23,18 +23,17 @@ Intput:
 İstanbul Küçükçekmece Arenapark AVM insan gücü lazım koliler var. Teyitli bizzat kendim yardımda idim sınava yetişmem gerekiyor.@AFADBaskanlik @ahbap_istanbul
 """
 
-Output:
-The tweet says that some people need help with workforce (insan gücü) to help with parcels(koliler), so it is [LOGISTICS]
+Summary:
+Some people need help with workforce (insan gücü) to help with parcels (koliler), tags are [LOGISTICS]
 #END
-
 
 Intput:
 """
 yagma talan saldırısı varmış duyumlara göre acil güvenlik tedbirleri acill!! halkın can ve mal güvenligi sizlerin ve içişlerinin görev alanıdır,syn,
 """
 
-Output:
-The tweet says that some people are looting (yagma, yağma), so it is [LOOTING]
+Summary:
+Some people are looting (yagma, yağma), tags are [LOOTING]
 #END
 
 Intput:
@@ -42,8 +41,8 @@ Intput:
 "Bölgeden gelen ihtiyaç taleplerine göre; gıda kolisi, hijyen malzemesi, battaniye, el feneri, powerbank, çocuk bezi ve çocuk maması gibi ihtiyaç malzemelerinin toplanmasına devam edeceğiz.Bu kapsamda 2. el giyim malzemesi kabul edilmeyecektir."
 """
 
-Output: 
-This tweet says that some poeple need hygiene items (hijyen malzemesi) blankets (battaniye), Flashlight (el feneri), powerbanks, diapers (çocuk bezi),  so it is [ELECTRONICS, FOOD, SHELTER, HEALTH, WATER]
+Summary: 
+Some poeple need hygiene items (hijyen malzemesi), food (mama), blankets (battaniye), Flashlight (el feneri), powerbanks, diapers (çocuk bezi),tags are [SHELTER, ELECTRONICS, FOOD, HEALTH]
 #END
 
 Intput:
@@ -51,8 +50,8 @@ Intput:
 ARKADAŞLAR LÜTFEN 20 kişilik aileye çadır lazım lütfen yardım edin
 """
 
-Output: 
-This tweet says that 20 people need a tents (çadır), so it is [SHELTER]
+Summary: 
+20 people need a tents (çadır), tags are [SHELTER]
 #END
 
 Input: 
@@ -66,17 +65,17 @@ Ekip arkadaşlarımıza ulaşamıyoruz. Lütfen binalar kontrol edilsin. Hayrull
 @AFADBaskanlik 
 """
 
-Output: 
-The tweet says that some multiple people under rubble (göçük/enkaz/yıkıntı/ulaşamıyoruz), so it is [RESCUE]
+Summary: 
+Multiple people under rubble (göçük / enkaz / yıkıntı /ulaşamıyoruz), tags are [RESCUE]
 #END
 
 Intput:
 """
-HATAY ANTAKYA BÖBREK YETMEZLİĞİ 5 YAŞINDA ÇOCUK ACİL İLAÇ‼️‼️‼️Topamax 100 mg.Derince mah. Derince çıkmazı bölge trafik yaniHatay AntakyaAhmet Akşun: 05347056864-05322173303
+HATAY ANTAKYA BÖBREK YETMEZLİĞİ 5 YAŞINDA ÇOCUK ACİL İLAÇ Topamax 100 mg.Derince mah. Derince çıkmazı bölge trafik yaniHatay AntakyaAhmet Akşun: 05347056864-05322173303
 """
 
-Output: 
-This tweet says that a 5 year old kid has kidney failure (BÖBREK YETMEZLİĞİ) and that they need medicine (İLAÇ), so it is [HEALTH]
+Summary: 
+5 year old kid has kidney failure (BÖBREK YETMEZLİĞİ) and that they need medicine (İLAÇ), tags are [HEALTH]
 #END
 
 Intput:
@@ -84,8 +83,8 @@ Intput:
 "Ve acil operatörlerin devreye girmesi lazım iletişim yok , konum paylaşımları yapılamıyor insanlara ulaşılamıyor. #hatay #deprem"
 """
 
-Output: 
-This tweet says people can't communicate (iletişim yok) they can't share location, so it is [ELECTRONICS]
+Summary: 
+People can't communicate (iletişim yok) they can't share location, tags are [ELECTRONICS]
 #END
 
 Intput:
@@ -98,12 +97,8 @@ Input:
 @Safderun42 Son dakika çoğu parti milletvekilleri bu ay ki maaşlarını deprem zedelere gönderme  kararı almış tebrik etmek lazım
 """
 
-Output:
-The tweet says that some prime misisters are donating salaries, so it is [UNRELATED]
-#END
-
-Output: 
-This tweet says that some poeple need blankets (battaniye), so it is [FOOD]
+Summary:
+Prime misisters are donating salaries, tags are [UNINFORMATIVE]
 #END
 
 Intput:
@@ -111,8 +106,8 @@ Intput:
 "Acil çok acil bu konuma gıda şimdi konuştum #depremsondakika @ProfDemirtas @ahbap @haluklevent @OguzhanUgur  maps.google.com/?q=36.095760,3…"
 """
 
-Output: 
-This tweet says that some poeple need food (gıda, yemek), so it is [CLOTHING]
+Summary: 
+Some poeple need food (gıda, yemek), tags are [FOOD]
 #END
 
 Intput:
@@ -120,8 +115,8 @@ Intput:
 @ProfDemirtas  @haluklevent ABİ SULARI YOKMUŞ.ERZAK İHTİYACI ACİL.
 """
 
-Output: 
-This tweet says that some poeple need water (su, SULARI, Suya), so it is [WATER]
+Summary: 
+Some poeple need water (su, SULARI, Suya), tags are [WATER]
 #END
 
 Input:
@@ -129,4 +124,4 @@ Input:
 {ocr_input}
 """
 
-Output:
+Summary:
