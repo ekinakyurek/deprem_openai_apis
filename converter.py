@@ -113,7 +113,7 @@ def get_address_str(address):
     return address_str.strip()
 
 
-def query_with_retry(inputs, max_retry=5):
+def query_with_retry(inputs, max_retry=5, **kwargs):
     """Queries GPT API up to max_retry time to get the responses."""
     request_completed = False
     current_retry = 0
@@ -121,14 +121,7 @@ def query_with_retry(inputs, max_retry=5):
     while not request_completed and current_retry <= max_retry:
         try:
             response = openai.Completion.create(
-                engine=FLAGS.engine,
-                prompt=inputs,
-                temperature=0.1,
-                max_tokens=FLAGS.max_tokens,
-                top_p=1,
-                frequency_penalty=0.3,
-                presence_penalty=0,
-                stop="#END",
+                **kwargs,
             )
             current_outputs = response["choices"]
             outputs = []
@@ -224,16 +217,25 @@ def main(_):
         raw_inputs.append(row)
 
         if (index + 1) % FLAGS.batch_size == 0 or index == len(raw_data) - 1:
-            outputs = query_with_retry(text_inputs)
+            outputs = query_with_retry(
+                text_inputs,
+                engine=FLAGS.engine,
+                prompt=inputs,
+                temperature=0.1,
+                max_tokens=FLAGS.max_tokens,
+                top_p=1,
+                frequency_penalty=0.3,
+                presence_penalty=0,
+                stop="#END")
 
             with open(FLAGS.output_file, "a+") as handle:
                 for inp, output_lines in zip(raw_inputs, outputs):
                     for output_line in output_lines:
                         current_input = inp.copy()
                         try:
-                            current_input[
-                                FLAGS.info + "_json"
-                            ] = postprocess(FLAGS.info, output_line)
+                            current_input[FLAGS.info + "_json"] = postprocess(
+                                FLAGS.info, output_line
+                            )
                             current_input[FLAGS.info + "_str"] = ""
                         except Exception as e:
                             logging.warning(f"Parsing error in {output_line},\n {e}")

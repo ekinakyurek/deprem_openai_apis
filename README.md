@@ -24,3 +24,7 @@ To extract the intent information:
 ```SHELL
 ./run_intent.sh
 ```
+
+# To Run FastAPI Backend
+
+- To run locally `uvicorn main:app --reload`
