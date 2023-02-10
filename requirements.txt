@@ -2,3 +2,4 @@ openai
 absl-py
 tqdm
 fastapi
+scipy

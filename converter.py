@@ -33,7 +33,7 @@ flags.DEFINE_boolean(
 
 flags.DEFINE_string("info", default="address", help="address | intent")
 
-flags.DEFINE_string("engine", "code-cushman-001", help="GPT engines")
+flags.DEFINE_string("engine", "code-davinci-002", help="GPT engines")
 
 GEO_BASE_URL = "https://maps.googleapis.com/maps/api/geocode/json?"
 
@@ -226,6 +226,7 @@ def main(_):
     else:
         raise ValueError("Unknown info")
 
+    logging.info(f"Engine {FLAGS.engine}")
     with open(FLAGS.input_file) as handle:
         # raw_data = [json.loads(line.strip()) for line in handle]
         raw_data = json.load(handle)

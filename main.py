@@ -76,6 +76,8 @@ def get_settings():
     pid = int(os.getpid())
     setup_openai(pid % settings.num_workers)
 
+    logging.warning(f"Engine {settings.engine}")
+
     return settings
 
 
@@ -101,12 +103,9 @@ def convert(
     text_inputs = []
     for tweet in inputs:
         text_inputs.append(template.format(ocr_input=tweet))
-
-    print(text_inputs)
     outputs = converter.query_with_retry(
         text_inputs,
         engine=settings.engine,
-        prompt=text_inputs,
         temperature=temperature,
         max_tokens=max_tokens,
         top_p=1,

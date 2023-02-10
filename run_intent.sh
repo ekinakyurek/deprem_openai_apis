@@ -1,5 +1,5 @@
 #!/bin/bash
-EXP_NAME="intent_v2"
+EXP_NAME="intent_code_davinci"
 BASE_PATH="/home/akyurek/deprem/"
 INPUTFILE="data/intent-multilabel-test-v1-2.json"
 NUMKEY=5
