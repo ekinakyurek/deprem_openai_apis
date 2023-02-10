@@ -81,10 +81,26 @@ def postprocess_for_address(address):
     return address
 
 
+TAG_MAP = {
+    "ELECTRONICS": "elektronik",
+    "WATER": "su",
+    "LOGISTICS": "lojistics",
+    "FOOD": "yiyecek",
+    "RESCUE": "kurtarma",
+    "HEALTH": "sağlık",
+    "UNRELATED": "alakasız",
+    "SHELTER": "barınma",
+    "LOOTING": "yağma",
+    "CLOTHING": "giyecek",
+}
+
+
 def postprocess_for_intent(intent):
     m = re.search(r"(?<=\[).+?(?=\])", intent)
     if m:
-        return {"intent": m.group()}
+        tags = m.group()
+        tags = [TAG_MAP.get(tag.strip(), tag.strip()) for tag in tags.split(",")]
+        return {"intent": ",".join(tags)}
     else:
         return {"intent": "unknown"}
 
@@ -226,7 +242,8 @@ def main(_):
                 top_p=1,
                 frequency_penalty=0.3,
                 presence_penalty=0,
-                stop="#END")
+                stop="#END",
+            )
 
             with open(FLAGS.output_file, "a+") as handle:
                 for inp, output_lines in zip(raw_inputs, outputs):
