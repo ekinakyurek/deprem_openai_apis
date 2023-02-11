@@ -16,7 +16,7 @@ class Settings(BaseSettings):
     detailed_intent_max_tokens: int = 50
     detailed_intent_max_tokens_v2: int = 100
     batch_size: int = 20
-    geo_location: bool = True
+    geo_location: bool = False
     num_workers: int = 5
     engine: str = "afet-org"
 
