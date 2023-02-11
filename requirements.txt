@@ -3,3 +3,4 @@ absl-py
 tqdm
 fastapi
 scipy
+scikit-learn
