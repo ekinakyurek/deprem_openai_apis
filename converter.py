@@ -85,6 +85,7 @@ TAG_MAP = {
     "ELECTRONICS": "Elektronik",
     "WATER": "Su",
     "LOGISTICS": "Lojistik",
+    "TRANSPORTATION": "Lojistik",
     "FOOD": "Yemek",
     "RESCUE": "Kurtarma",
     "HEALTH": "Saglik",
@@ -182,6 +183,17 @@ def query_with_retry(inputs, max_retry=5, **kwargs):
 
 
 def setup_openai():
+
+    if int(FLAGS.worker_id) > 1:
+        openai.api_type = "azure"
+        openai.api_base = "https://afet-org-v2.openai.azure.com/"
+        openai.api_version = "2022-12-01"
+    else:
+        openai.api_type = "azure"
+        openai.api_base = "https://afet-org.openai.azure.com/"
+        openai.api_version = "2022-12-01"
+
+
     try:
         openai_keys = os.environ["OPENAI_API_KEY_POOL"].split(",")
     except KeyError:

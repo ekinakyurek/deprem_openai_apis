@@ -1,8 +1,8 @@
 #!/bin/bash
-EXP_NAME="detailed_intent_w_categories"
+EXP_NAME="detailed_intent_davinci"
 BASE_PATH="/home/akyurek/deprem/"
 INPUTFILE="data/intent-multilabel-test-v1-2.json"
-NUMKEY=5
+NUMKEY=4
 
 for i in $(seq 0 $((NUMKEY-1)));
 do
@@ -15,6 +15,7 @@ do
     --worker_id $i \
     --info="detailed_intent_v2" \
     --max_tokens 100 \
+    --engine="afet-org" \
     --num_workers $NUMKEY > $OUTPUT_PATH/out.log 2>&1 &
 done
 

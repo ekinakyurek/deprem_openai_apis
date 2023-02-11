@@ -33,6 +33,16 @@ class RequestIntent(BaseModel):
 
 
 def setup_openai(worker_id: int = 0):
+    
+    if int(worker_id) > 1:
+        openai.api_type = "azure"
+        openai.api_base = "https://afet-org-v2.openai.azure.com/"
+        openai.api_version = "2022-12-01"
+    else:
+        openai.api_type = "azure"
+        openai.api_base = "https://afet-org.openai.azure.com/"
+        openai.api_version = "2022-12-01"
+
     try:
         openai_keys = os.getenv("OPENAI_API_KEY_POOL").split(",")
     except KeyError:

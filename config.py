@@ -18,7 +18,7 @@ class Settings(BaseSettings):
     batch_size: int = 20
     geo_location: bool = True
     num_workers: int = 5
-    engine: str = "code-davinci-002"
+    engine: str = "afet-org"
 
     class Config:
         env_file = ".env"
