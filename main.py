@@ -4,8 +4,6 @@ import logging
 import openai
 
 from fastapi import FastAPI
-from reqs import RequestAddress
-from reqs import RequestIntent
 
 import converter
 
@@ -70,6 +68,12 @@ def get_settings():
     with open(settings.intent_prompt_file) as handle:
         settings.intent_template = handle.read()
 
+    with open(settings.detailed_intent_prompt_file) as handle:
+        settings.detailed_intent_template = handle.read()
+
+    with open(settings.detailed_intent_prompt_file_v2) as handle:
+        settings.detailed_intent_template_v2 = handle.read()
+
     if settings.geo_location:
         settings.geo_key = setup_geocoding()
 
@@ -84,7 +88,6 @@ def get_settings():
 def convert(
     info: str,
     inputs: List[str],
-    template: str,
     settings: Settings,
 ):
     if info == "address":
@@ -95,6 +98,16 @@ def convert(
     elif info == "intent":
         template = settings.intent_template
         max_tokens = settings.intent_max_tokens
+        temperature = 0.0
+        frequency_penalty = 0.0
+    elif info == "detailed_intent":
+        template = settings.detailed_intent_template
+        max_tokens = settings.detailed_intent_max_tokens
+        temperature = 0.0
+        frequency_penalty = 0.0
+    elif info == "detailed_intent_v2":
+        template = settings.detailed_intent_template_v2
+        max_tokens = settings.detailed_intent_max_tokens_v2
         temperature = 0.0
         frequency_penalty = 0.0
     else:
@@ -137,7 +150,7 @@ def convert(
 async def address(payload: RequestAddress):
     settings = get_settings()
     inputs = payload.dict()["inputs"]
-    outputs = convert("address", inputs, settings.address_template, settings)
+    outputs = convert("address", inputs, settings)
     return {"outputs": outputs}
 
 
@@ -145,5 +158,5 @@ async def address(payload: RequestAddress):
 async def intent(payload: RequestIntent):
     settings = get_settings()
     inputs = payload.dict()["inputs"]
-    outputs = convert("intent", inputs, settings.address_template, settings)
-    return {"outputs": outputs}
+    outputs = convert("detailed_intent_v2", inputs, settings)
+    return {"response": outputs}

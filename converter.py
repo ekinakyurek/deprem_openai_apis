@@ -91,7 +91,7 @@ TAG_MAP = {
     "UNINFORMATIVE": "Alakasiz",
     "SHELTER": "Barinma",
     "LOOTING": "Yagma",
-    "CLOTHING": "Giysi",
+    "CLOTHES": "Giysi",
 }
 
 
@@ -105,11 +105,28 @@ def postprocess_for_intent(intent):
         return {"intent": "unknown"}
 
 
+def postprocess_for_intent_v2(intent):
+    m = re.findall(r"(?<=\[).+?(?=\])", intent)
+    if m and len(m) == 2:
+        detailed_intent, intent  = m
+
+        detailed_intent_tags = [TAG_MAP.get(tag.strip(), tag.strip()) for tag in detailed_intent.split(',')]
+        intent_tags = [TAG_MAP.get(tag.strip(), tag.strip()) for tag in intent.split(',')]
+
+        return {"intent": ",".join(intent_tags), "detailed_intent_tags": ",".join(detailed_intent_tags)}
+    else:
+        return {"intent": "unknown"}
+
+
 def postprocess(info, line):
     if info == "address":
         return postprocess_for_address(line)
     elif info == "intent":
         return postprocess_for_intent(line)
+    elif info == "detailed_intent":
+        return postprocess_for_intent(line)
+    elif info == "detailed_intent_v2":
+        return postprocess_for_intent_v2(line)
     else:
         raise ValueError("Unknown info type")
 
@@ -220,7 +237,7 @@ def main(_):
     if FLAGS.info == "address":
         temperature = 0.1
         frequency_penalty = 0.3
-    elif FLAGS.info == "intent":
+    elif "intent" in FLAGS.info:
         temperature = 0.0
         frequency_penalty = 0.0
     else:

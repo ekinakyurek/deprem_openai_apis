@@ -1,0 +1,122 @@
+# Intent Classification for Turkish Tweets
+
+Input: 
+"""
+Feyzanur Alkan YAŞIYOR ACİL YARIM SAAT ÖNCE SES GELMİŞ KURTARILMAYI BEKLİYOR. Atatürk Bulvarı Mehmet Akif Ersoy Mahallesi 505.Sokak No 1 Alkanlar Apartmanı Adıyaman/Merkez - Adnan AlkanACİL HİLTİ İSPİRAL JENERATÖR LAZIM
+"""
+
+Summary: 
+Some people are still alive, and need for generator, tags are [RESCUE, ELECTRONICS]
+#END
+
+Input: 
+"""
+Lütfen önerileri dikkate alınÜLKEMİZDEKİ DEMİR VE KALIP USTALARINI ACİL ACİL CAĞIRIN GERGİN DEMİR KESME USTALIK İŞİDİR LÜTFEN USTALARIMIZI AÇİL TOPLAYIN DEPREM SAHALARINA SEVK EDİN
+"""
+
+Summary:
+Some people people are calling for construction workers to help, tags are [LOGISTICS]
+#END
+
+Intput:
+"""
+İstanbul Küçükçekmece Arenapark AVM insan gücü lazım koliler var. Teyitli bizzat kendim yardımda idim sınava yetişmem gerekiyor.@AFADBaskanlik @ahbap_istanbul
+"""
+
+Summary:
+Some people need help with workforce (insan gücü) to help with parcels (koliler), tags are [LOGISTICS]
+#END
+
+Intput:
+"""
+yagma talan saldırısı varmış duyumlara göre acil güvenlik tedbirleri acill!! halkın can ve mal güvenligi sizlerin ve içişlerinin görev alanıdır,syn,
+"""
+
+Summary:
+Some people are looting (yagma, yağma), tags are [LOOTING]
+#END
+
+Intput:
+"""
+"Bölgeden gelen ihtiyaç taleplerine göre; gıda kolisi, hijyen malzemesi, battaniye, el feneri, powerbank, çocuk bezi ve çocuk maması gibi ihtiyaç malzemelerinin toplanmasına devam edeceğiz.Bu kapsamda 2. el giyim malzemesi kabul edilmeyecektir."
+"""
+
+Summary: 
+Some poeple need hygiene items (hijyen malzemesi), food (mama), blankets (battaniye), Flashlight (el feneri), powerbanks, diapers (çocuk bezi), tags are [SHELTER, ELECTRONICS, FOOD, CLOTHES, HEALTH]
+#END
+
+Intput:
+"""
+ARKADAŞLAR LÜTFEN 20 kişilik aileye çadır lazım lütfen yardım edin
+"""
+
+Summary: 
+20 people need a tents (çadır), tags are [SHELTER]
+#END
+
+Input: 
+"""
+@DepremDairesi @AKUT_Dernegi @KizilayDestek #depremadres
+
+https://t.co/FbCmDUSz5I
+
+Ekip arkadaşlarımıza ulaşamıyoruz. Lütfen binalar kontrol edilsin. Hayrullah mah. Malik Ejder cad. Arıkan sit. A blok Kat:4 Kapı No:10 Onikişubat/Kahramanmaraş
+
+@AFADBaskanlik 
+"""
+
+Summary: 
+Multiple people under rubble (göçük / enkaz / yıkıntı /ulaşamıyoruz), tags are [RESCUE]
+#END
+
+Intput:
+"""
+HATAY ANTAKYA BÖBREK YETMEZLİĞİ 5 YAŞINDA ÇOCUK ACİL İLAÇ Topamax 100 mg.Derince mah. Derince çıkmazı bölge trafik yaniHatay AntakyaAhmet Akşun: 05347056864-05322173303
+"""
+
+Summary: 
+5 year old kid has kidney failure (BÖBREK YETMEZLİĞİ) and that they need medicine (İLAÇ), tags are [HEALTH]
+#END
+
+Intput:
+"""
+"Ve acil operatörlerin devreye girmesi lazım iletişim yok , konum paylaşımları yapılamıyor insanlara ulaşılamıyor. #hatay #deprem"
+"""
+
+Summary: 
+People can't communicate (iletişim yok) they can't share location, tags are [ELECTRONICS]
+#END
+
+Input: 
+"""
+@Safderun42 Son dakika çoğu parti milletvekilleri bu ay ki maaşlarını deprem zedelere gönderme  kararı almış tebrik etmek lazım
+"""
+
+Summary:
+Prime misisters are donating salaries, tags are [UNINFORMATIVE]
+#END
+
+Intput:
+"""
+"Acil çok acil bu konuma gıda şimdi konuştum #depremsondakika @ProfDemirtas @ahbap @haluklevent @OguzhanUgur  maps.google.com/?q=36.095760,3…"
+"""
+
+Summary: 
+Some poeple need food (gıda, yemek), tags are [FOOD]
+#END
+
+Intput:
+"""
+@ProfDemirtas  @haluklevent ABİ SULARI YOKMUŞ.ERZAK İHTİYACI ACİL.
+"""
+
+Summary: 
+Some poeple need water (su, SULARI, Suya), food + water (erzak) tags are [WATER, FOOD]
+#END
+
+Input:
+"""
+{ocr_input}
+"""
+
+Summary:
