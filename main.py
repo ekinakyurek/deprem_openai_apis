@@ -140,3 +140,15 @@ async def intent(payload: RequestIntent):
     inputs = payload.dict()["inputs"]
     outputs = convert("detailed_intent_v2", inputs, settings)
     return {"response": outputs}
+
+
+@app.get("/health")
+async def health():
+    settings = get_settings()
+    inputs = ["İskenderun Hatay ilaç lazım aspirin"]
+    outputs = convert("detailed_intent_v2", inputs, settings)
+    if len(outputs[0]["processed"]["detailed_intent_tags"]) > 0:
+        current_status = 200
+    else:
+        current_status = 500
+    return {"health_status": current_status}
