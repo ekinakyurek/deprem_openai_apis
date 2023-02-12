@@ -192,40 +192,41 @@ def query_with_retry(inputs, max_retry=5, **kwargs):
             current_retry += 1
     return outputs
 
-
-def setup_openai():
-
-    if int(FLAGS.worker_id) > 1:
-        openai.api_type = "azure"
-        openai.api_base = "https://afet-org-v2.openai.azure.com/"
-        openai.api_version = "2022-12-01"
-    else:
-        openai.api_type = "azure"
-        openai.api_base = "https://afet-org.openai.azure.com/"
-        openai.api_version = "2022-12-01"
+def setup_openai(worker_id: int = 0):
+    logging.warning(f"worker id in open ai keys {worker_id}")
 
     try:
-        openai_keys = os.environ["OPENAI_API_KEY_POOL"].split(",")
+        openai_keys = os.getenv("OPENAI_API_KEY_POOL").split(",")
     except KeyError:
-        logging.error("OPENAI_API_KEY_POOL environment variable is not specified")
-
+        logging.error("OPENAI_API_KEY_POOL or OPENAI_API_BASE_POOL environment variable is not specified")
+    
     assert len(openai_keys) > 0, "No keys specified in the environment variable"
 
-    worker_openai_key = openai_keys[FLAGS.worker_id % len(openai_keys)].strip()
-    openai.api_key = worker_openai_key
+    openai.api_key = openai_keys[worker_id % len(openai_keys)].strip()
 
-
-def setup_geocoding():
     try:
-        geo_keys = os.environ["GEO_KEY_POOL"].split(",")
+        openai_bases = os.getenv("OPENAI_API_BASE_POOL").split(",")
+        assert len(openai_bases) == len(openai_keys)
+        openai.api_type = "azure"
+        openai.api_version = "2022-12-01"
+        openai.api_base = openai_bases[worker_id % len(openai_bases)].strip()
+    except KeyError:
+        logging.warning("OPENAI_API_BASE_POOL is not specified in the environment")
+    except AssertionError as msg:
+        logging.error(f"Env variables OPENAI_API_KEY_POOL and OPENAI_API_BASE_POOL has incosistent shapes, {msg}")
+
+def setup_geocoding(worker_id: int = 0):
+    try:
+        geo_keys = os.getenv("GEO_KEY_POOL").split(",")
     except KeyError:
         logging.error("GEO_KEY_POOL environment variable is not specified")
 
     assert len(geo_keys) > 0, "No keys specified in the environment variable"
 
-    worker_geo_key = geo_keys[FLAGS.worker_id % len(geo_keys)].strip()
+    worker_geo_key = geo_keys[worker_id % len(geo_keys)].strip()
 
     return worker_geo_key
+
 
 
 def get_geo_result(key, address):
@@ -249,9 +250,9 @@ def get_geo_result(key, address):
 
 
 def main(_):
-    setup_openai()
+    setup_openai(FLAGS.worker_id)
     if FLAGS.geo_location:
-        geo_key = setup_geocoding()
+        geo_key = setup_geocoding(FLAGS.worker_id)
 
     with open(FLAGS.prompt_file) as handle:
         template = handle.read()
