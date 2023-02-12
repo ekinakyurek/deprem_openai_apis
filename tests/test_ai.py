@@ -1,6 +1,7 @@
 from fastapi.testclient import TestClient
 from main import app
 
+
 client = TestClient(app=app)
 
 PAYLOAD = {
@@ -15,6 +16,5 @@ PAYLOAD = {
 
 
 def test_intent():
-    payload = PAYLOAD
-    response = client.post("/intent-extractor/", json=payload)
+    response = client.post("/intent-extractor/", json=PAYLOAD)
     assert response.status_code == 200
