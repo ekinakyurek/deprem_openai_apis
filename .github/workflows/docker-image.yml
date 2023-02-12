@@ -8,6 +8,9 @@ jobs:
   deploy:
     name: Deploy
     runs-on: ubuntu-latest
+    permissions:
+      actions: write
+      id-token: write
     environment: prod
 
     steps:
