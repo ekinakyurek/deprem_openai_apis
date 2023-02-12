@@ -1,13 +1,14 @@
 import json
 import os
+import pdb
+import re
 import time
 import urllib
 import openai
 import requests
-import re
 from absl import app, flags, logging
 from tqdm import tqdm
-import pdb
+
 
 FLAGS = flags.FLAGS
 
@@ -109,14 +110,24 @@ def postprocess_for_intent(intent):
 def postprocess_for_intent_v2(intent):
     m = re.findall(r"(?<=\[).+?(?=\])", intent)
     if m and len(m) == 2:
-        detailed_intent, intent  = m
+        detailed_intent, intent = m
 
-        detailed_intent_tags = [TAG_MAP.get(tag.strip(), tag.strip()) for tag in detailed_intent.split(',')]
-        intent_tags = [TAG_MAP.get(tag.strip(), tag.strip()) for tag in intent.split(',')]
+        detailed_intent_tags = [
+            TAG_MAP.get(tag.strip(), tag.strip()) for tag in detailed_intent.split(",")
+        ]
+        intent_tags = [
+            TAG_MAP.get(tag.strip(), tag.strip()) for tag in intent.split(",")
+        ]
 
-        return {"intent": ",".join(intent_tags), "detailed_intent_tags": ",".join(detailed_intent_tags)}
+        return {
+            "intent": intent_tags,  # ",".join(intent_tags),
+            "detailed_intent_tags": detailed_intent_tags,  # ",".join(detailed_intent_tags),
+        }
     else:
-        return {"intent": "unknown"}
+        return {
+            "intent": [""],  # ",".join(intent_tags),
+            "detailed_intent_tags": [""],  # ",".join(detailed_intent_tags),
+        }
 
 
 def postprocess(info, line):
@@ -192,7 +203,6 @@ def setup_openai():
         openai.api_type = "azure"
         openai.api_base = "https://afet-org.openai.azure.com/"
         openai.api_version = "2022-12-01"
-
 
     try:
         openai_keys = os.environ["OPENAI_API_KEY_POOL"].split(",")
