@@ -7,35 +7,20 @@ from fastapi import Depends, FastAPI
 from pydantic import BaseModel, Field
 import converter
 from config import Settings
-
+from models import IntentResponse, RequestIntent
 
 app = FastAPI()
 
-
-class RequestAddress(BaseModel):
-    inputs: List[str] = Field(
-        description="list of tweets to classify or parse",
-        default=""" ["İskenderun Hatay Mustafa Kemal mahallesi 544 sokak no:11 (Batı Göz hastanesi sokağı) Selahattin Yurt Dudu Yurt Sezer Yurt GÖÇÜK ALTINDALAR!!! #DEPREMOLDU #depremhatay #deprem #Hatay #hatayacil #HatayaYardım #hataydepremi", "LÜTFEN YAYIN!!!! 8 katlı bina HATAYDA Odabaşı mah. Uğur Mumcu caddesi no 4 Mahmut Karakaş kat 4"]""",
-    )
-
-
-class RequestIntent(BaseModel):
-    inputs: List[str] = Field(
-        description="list of tweets to classify or parse",
-        default=""" ["İskenderun Hatay Mustafa Kemal mahallesi 544 sokak no:11 (Batı Göz hastanesi sokağı) Selahattin Yurt Dudu Yurt Sezer Yurt GÖÇÜK ALTINDALAR!!! #DEPREMOLDU #depremhatay #deprem #Hatay #hatayacil #HatayaYardım #hataydepremi", "LÜTFEN YAYIN!!!! 8 katlı bina HATAYDA Odabaşı mah. Uğur Mumcu caddesi no 4 Mahmut Karakaş kat 4"]""",
-    )
+# os.environ[
+#     "OPENAI_API_KEY_POOL"
+# ] = "17732df5e98b42d3a12710c5660b8c51,4ef70443ab1c4294b9ec505e11912a00"
 
 
 def setup_openai(worker_id: int = 0):
 
-    if int(worker_id) > 1:
-        openai.api_type = "azure"
-        openai.api_base = "https://afet-org-v2.openai.azure.com/"
-        openai.api_version = "2022-12-01"
-    else:
-        openai.api_type = "azure"
-        openai.api_base = "https://afet-org.openai.azure.com/"
-        openai.api_version = "2022-12-01"
+    openai.api_type = "azure"
+    openai.api_base = "https://afet-org.openai.azure.com/"
+    openai.api_version = "2022-12-01"
 
     try:
         openai_keys = os.getenv("OPENAI_API_KEY_POOL").split(",")
@@ -153,15 +138,7 @@ def convert(
     return returned
 
 
-@app.post("/address-extractor")
-async def address(payload: RequestAddress):
-    settings = get_settings()
-    inputs = payload.dict()["inputs"]
-    outputs = convert("address", inputs, settings)
-    return {"outputs": outputs}
-
-
-@app.post("/intent-extractor/")
+@app.post("/intent-extractor/", response_model=IntentResponse)
 async def intent(payload: RequestIntent):
     settings = get_settings()
     inputs = payload.dict()["inputs"]
