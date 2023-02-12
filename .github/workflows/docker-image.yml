@@ -20,15 +20,6 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v3
-    - name: Python setup
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.10' 
-    - name: Install deps
-      run: python -m pip install -r requirements.txt
-    - name: Tests
-      run: |
-        OPENAI_API_BASE_POOL=${OPENAI_API_BASE_POOL} OPENAI_API_KEY_POOL=${OPENAI_API_KEY_POOL} pytest --verbose
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v1
       with:
@@ -51,6 +42,7 @@ jobs:
         # push it to ECR so that it can
         # be deployed to ECS.
         docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+        docker run --rm -it $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG sh -c "OPENAI_API_BASE_POOL=${OPENAI_API_BASE_POOL} OPENAI_API_KEY_POOL=${OPENAI_API_KEY_POOL} pytest --verbose"
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
         echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
 
