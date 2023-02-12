@@ -1,5 +1,6 @@
 import logging
 import os
+import re
 from functools import lru_cache
 from typing import List
 from fastapi import FastAPI
@@ -66,10 +67,22 @@ def convert(
     else:
         raise ValueError("Unknown information extraction requested")
 
-    def create_prompt(text, template):
+    def preprocess_tweet(text: str) -> str:
+        mention_pattern = r"@\w+"
+        url_pattern = r"(\w+?://)?(?:www\.)?[-a-zA-Z0-9@:%._\\+~#=]{1,256}\.[a-zA-Z]{1,10}\b(?:[-a-zA-Z0-9()@:%_\\+.~#?&\\/=]*)"
+        # remove mentions
+        mentions_removed = re.sub(mention_pattern, " ", text)
+        # remove urls
+        url_removed = re.sub(url_pattern, "", mentions_removed)
+        # remove consequent spaces
+        return re.sub(r"\s+", " ", url_removed)
+
+    def create_prompt(text, template) -> str:
         template_token_count = GPTTokenizer.token_count(template)
-        text_max_token_count = GPTTokenizer.MAX_TOKENS - template_token_count
-        truncated_text = GPTTokenizer.truncate(text, text_max_token_count)
+        truncated_text = GPTTokenizer.truncate(
+            preprocess_tweet(text),
+            max_tokens=GPTTokenizer.MAX_TOKENS - template_token_count,
+        )
         return template.format(ocr_input=truncated_text)
 
     text_inputs = []
