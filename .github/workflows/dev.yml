@@ -1,8 +1,8 @@
-name: Deploy DepremOpenAiApi
+name: Test DepremOpenAiApi
 
 on:
   push:
-    branches: ["main"]
+    branches-ignore: ["main"]
 
 env:
   OPENAI_API_BASE_POOL: ${{ secrets.OPENAI_API_BASE_POOL }}
