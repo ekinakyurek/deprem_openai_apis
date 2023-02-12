@@ -11,6 +11,7 @@ jobs:
     permissions:
       actions: write
       id-token: write
+    environment: prod
 
     steps:
     - name: Checkout
