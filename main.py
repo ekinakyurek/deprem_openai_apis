@@ -11,8 +11,8 @@ from models import IntentResponse, RequestIntent
 app = FastAPI()
 
 
-@lru_cache()
-def get_settings():
+@lru_cache(maxsize=None)
+def get_settings(pid: int):
     settings = Settings()
 
     with open(settings.address_prompt_file) as handle:
@@ -30,7 +30,7 @@ def get_settings():
     if settings.geo_location:
         settings.geo_key = converter.setup_geocoding()
 
-    converter.setup_openai(int(os.getpid()) % settings.num_workers)
+    converter.setup_openai(pid % settings.num_workers)
 
     logging.warning(f"Engine {settings.engine}")
 
@@ -103,7 +103,8 @@ def convert(
 
 @app.post("/intent-extractor/", response_model=IntentResponse)
 async def intent(payload: RequestIntent):
-    settings = get_settings()
+    pid = int(os.getpid())
+    settings = get_settings(pid)
     inputs = payload.dict()["inputs"]
     outputs = convert("detailed_intent_v2", inputs, settings)
     return {"response": outputs}
@@ -111,11 +112,5 @@ async def intent(payload: RequestIntent):
 
 @app.get("/health")
 async def health():
-    settings = get_settings()
-    inputs = ["İskenderun Hatay ilaç lazım aspirin"]
-    outputs = convert("detailed_intent_v2", inputs, settings)
-    if len(outputs[0]["processed"]["detailed_intent_tags"]) > 0:
-        current_status = 200
-    else:
-        current_status = 500
-    return {"health_status": current_status}
+
+    return {"status": "living the dream"}
