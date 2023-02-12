@@ -43,7 +43,7 @@ jobs:
           # push it to ECR so that it can
           # be deployed to ECS.
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
-          docker run --rm -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG sh -c "OPENAI_API_BASE_POOL=${OPENAI_API_BASE_POOL} OPENAI_API_KEY_POOL=${OPENAI_API_KEY_POOL} pytest --verbose"
+          docker run --rm -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG sh -c "OPENAI_API_BASE_POOL=${OPENAI_API_BASE_POOL} OPENAI_API_KEY_POOL=${OPENAI_API_KEY_POOL} pytest --verbose -s"
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
 
