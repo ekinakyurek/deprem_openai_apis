@@ -2,14 +2,14 @@ import logging
 import os
 from functools import lru_cache
 from typing import List
-import openai
-from fastapi import Depends, FastAPI
-from pydantic import BaseModel, Field
+from fastapi import FastAPI
 import converter
 from config import Settings
 from models import IntentResponse, RequestIntent
 
+
 app = FastAPI()
+
 
 @lru_cache()
 def get_settings():

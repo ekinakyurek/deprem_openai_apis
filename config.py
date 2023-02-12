@@ -1,6 +1,7 @@
 from typing import Optional
 from pydantic import BaseSettings
 
+
 class Settings(BaseSettings):
     address_prompt_file: str = "prompts/address.txt"
     intent_prompt_file: str = "prompts/intent_v2.txt"
