@@ -1,13 +1,13 @@
 import json
 import os
-import pdb
 import re
-import time
 import urllib
+from typing import List
 import openai
 import requests
 from absl import app, flags, logging
 from tqdm import tqdm
+from network_manager import interact_with_api
 
 
 FLAGS = flags.FLAGS
@@ -104,7 +104,7 @@ def postprocess_for_intent(intent):
         tags = [TAG_MAP.get(tag.strip(), tag.strip()) for tag in tags.split(",")]
         return {"intent": ",".join(tags)}
     else:
-        return {"intent": "unknown"}
+        return {"intent": "Diğer"}
 
 
 def postprocess_for_intent_v2(intent):
@@ -158,39 +158,20 @@ def get_address_str(address):
     return address_str.strip()
 
 
-def query_with_retry(inputs, max_retry=5, **kwargs):
+def query_with_retry(inputs: List[str], **kwargs) -> List[List[str]]:
     """Queries GPT API up to max_retry time to get the responses."""
-    request_completed = False
-    current_retry = 0
-    outputs = [['{"status": "ERROR"}']] * len(inputs)
-    while not request_completed and current_retry <= max_retry:
-        try:
-            response = openai.Completion.create(
-                prompt=inputs,
-                **kwargs,
-            )
-            current_outputs = response["choices"]
-            outputs = []
-            for i in range(len(current_outputs)):
-                outputs.append(
-                    [
-                        line
-                        for line in current_outputs[i]["text"].split("\n")
-                        if len(line) > 10
-                    ]
-                )
-            request_completed = True
-        except openai.error.RateLimitError as error:
-            logging.warning(f"Rate Limit Error: {error}")
-            # wait for token limit in the API
-            time.sleep(10 * current_retry)
-            current_retry += 1
-        except openai.error.InvalidRequestError as error:
-            logging.warning(f"Invalid Request: {error}")
-            # wait for token limit in the API
-            time.sleep(10 * current_retry)
-            current_retry += 1
-    return outputs
+
+    try:
+        response = interact_with_api(openai.Completion.create, prompt=inputs, **kwargs)
+    except Exception:
+        # TODO can main method handle this output?
+        return [['{"status": "ERROR"}']] * len(inputs)
+
+    return [
+        [line for line in choice["text"].split("\n") if len(line) > 10]
+        for choice in response["choices"]
+    ]
+
 
 def setup_openai(worker_id: int = 0):
     logging.warning(f"worker id in open ai keys {worker_id}")
@@ -198,8 +179,11 @@ def setup_openai(worker_id: int = 0):
     try:
         openai_keys = os.getenv("OPENAI_API_KEY_POOL").split(",")
     except KeyError:
-        logging.error("OPENAI_API_KEY_POOL or OPENAI_API_BASE_POOL environment variable is not specified")
-    
+        logging.error(
+            "OPENAI_API_KEY_POOL or OPENAI_API_BASE_POOL environment variable is not"
+            " specified"
+        )
+
     assert len(openai_keys) > 0, "No keys specified in the environment variable"
 
     openai.api_key = openai_keys[worker_id % len(openai_keys)].strip()
@@ -213,7 +197,11 @@ def setup_openai(worker_id: int = 0):
     except KeyError:
         logging.warning("OPENAI_API_BASE_POOL is not specified in the environment")
     except AssertionError as msg:
-        logging.error(f"Env variables OPENAI_API_KEY_POOL and OPENAI_API_BASE_POOL has incosistent shapes, {msg}")
+        logging.error(
+            "Env variables OPENAI_API_KEY_POOL and OPENAI_API_BASE_POOL has"
+            f" incosistent shapes, {msg}"
+        )
+
 
 def setup_geocoding(worker_id: int = 0):
     try:
@@ -226,7 +214,6 @@ def setup_geocoding(worker_id: int = 0):
     worker_geo_key = geo_keys[worker_id % len(geo_keys)].strip()
 
     return worker_geo_key
-
 
 
 def get_geo_result(key, address):
@@ -258,11 +245,9 @@ def main(_):
         template = handle.read()
 
     if FLAGS.info == "address":
-        temperature = 0.1
-        frequency_penalty = 0.3
+        completion_params = dict(temperature=0.1, frequency_penalty=0.3)
     elif "intent" in FLAGS.info:
-        temperature = 0.0
-        frequency_penalty = 0.0
+        completion_params = dict(temperature=0.0, frequency_penalty=0.0)
     else:
         raise ValueError("Unknown info")
 
@@ -288,12 +273,11 @@ def main(_):
             outputs = query_with_retry(
                 text_inputs,
                 engine=FLAGS.engine,
-                temperature=temperature,
                 max_tokens=FLAGS.max_tokens,
                 top_p=1,
-                frequency_penalty=frequency_penalty,
                 presence_penalty=0,
                 stop="#END",
+                **completion_params,
             )
 
             with open(FLAGS.output_file, "a+") as handle:
