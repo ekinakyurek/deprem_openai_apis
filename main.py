@@ -108,8 +108,8 @@ def convert(
             returned_dict["processed"] = converter.postprocess(info, output[0])
         except Exception as e:
             returned_dict["processed"] = {
-                "intent": [""],
-                "detailed_intent_tags": [""],
+                "intent": [],
+                "detailed_intent_tags": [],
             }
             logging.warning(f"Parsing error in {output},\n {e}")
 
@@ -133,5 +133,4 @@ async def intent(payload: RequestIntent):
 
 @app.get("/health")
 async def health():
-
     return {"status": "living the dream"}

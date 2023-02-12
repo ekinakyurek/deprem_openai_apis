@@ -18,3 +18,14 @@ PAYLOAD = {
 def test_intent():
     response = client.post("/intent-extractor/", json=PAYLOAD)
     assert response.status_code == 200
+    outputs = response.json()
+    assert isinstance(outputs, list)
+
+    for obj in outputs:
+        assert isinstance(obj, dict)
+        assert "string" in obj
+        assert "processed" in obj
+        assert isinstance(obj["processed"]["intent"], list)
+        assert len(obj["processed"]["intent"]) > 0
+        assert isinstance(obj["processed"]["detailed_intent_tags"], list)
+        assert len(obj["processed"]["detailed_intent_tags"]) > 0

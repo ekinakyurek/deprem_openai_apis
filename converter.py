@@ -125,8 +125,8 @@ def postprocess_for_intent_v2(intent):
         }
     else:
         return {
-            "intent": [""],  # ",".join(intent_tags),
-            "detailed_intent_tags": [""],  # ",".join(detailed_intent_tags),
+            "intent": [],  # ",".join(intent_tags),
+            "detailed_intent_tags": [],  # ",".join(detailed_intent_tags),
         }
 
 
