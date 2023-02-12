@@ -33,3 +33,7 @@ To extract the intent information:
 # To Run FastAPI Backend
 
 - To run locally `uvicorn main:app --reload`
+
+
+
+Running github actions 
