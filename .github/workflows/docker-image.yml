@@ -5,8 +5,11 @@ on:
     branches: ["main"]
 
 jobs:
-  build:
+  deploy:
+    name: Deploy
     runs-on: ubuntu-latest
+    environment: prod
+
     steps:
     - uses: actions/checkout@v3
     - name: Python setup
@@ -18,12 +21,6 @@ jobs:
     - name: Tests
       run: |
         pytest --verbose
-  deploy:
-    name: Deploy
-    runs-on: ubuntu-latest
-    environment: prod
-
-    steps:
     - name: Checkout
       uses: actions/checkout@v3
 
