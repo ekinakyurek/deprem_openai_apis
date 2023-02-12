@@ -1,0 +1,27 @@
+name: Test DepremOpenAiApi
+
+on:
+  push:
+    branches-ignore: ["main"]
+
+env:
+  OPENAI_API_BASE_POOL: ${{ secrets.OPENAI_API_BASE_POOL }}
+  OPENAI_API_KEY_POOL: ${{ secrets.OPENAI_API_KEY_POOL }}
+
+jobs:
+  deploy:
+    name: test_on_branch
+    runs-on: ubuntu-latest
+    environment: prod
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Build and test
+        id: build-image
+        env:
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          docker build -t deprem-openai-apis-test:latest .
+          docker run --rm -t deprem-openai-apis-test:latest sh -c "OPENAI_API_BASE_POOL=${OPENAI_API_BASE_POOL} OPENAI_API_KEY_POOL=${OPENAI_API_KEY_POOL} pytest --verbose"
