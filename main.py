@@ -1,19 +1,13 @@
-from typing import List
-import os
 import logging
-import openai
-
-from fastapi import FastAPI
-
-import converter
-
+import os
 from functools import lru_cache
-
+from typing import List
+import openai
 from fastapi import Depends, FastAPI
-
+from pydantic import BaseModel, Field
+import converter
 from config import Settings
 
-from pydantic import BaseModel, Field
 
 app = FastAPI()
 
@@ -33,7 +27,7 @@ class RequestIntent(BaseModel):
 
 
 def setup_openai(worker_id: int = 0):
-    
+
     if int(worker_id) > 1:
         openai.api_type = "azure"
         openai.api_base = "https://afet-org-v2.openai.azure.com/"
@@ -78,8 +72,8 @@ def get_settings():
     with open(settings.intent_prompt_file) as handle:
         settings.intent_template = handle.read()
 
-    with open(settings.detailed_intent_prompt_file) as handle:
-        settings.detailed_intent_template = handle.read()
+    # with open(settings.detailed_intent_prompt_file) as handle:
+    #     settings.detailed_intent_template = handle.read()
 
     with open(settings.detailed_intent_prompt_file_v2) as handle:
         settings.detailed_intent_template_v2 = handle.read()
@@ -144,7 +138,10 @@ def convert(
         try:
             returned_dict["processed"] = converter.postprocess(info, output[0])
         except Exception as e:
-            returned_dict["processed"] = {}
+            returned_dict["processed"] = {
+                "intent": [""],
+                "detailed_intent_tags": [""],
+            }
             logging.warning(f"Parsing error in {output},\n {e}")
 
         if info == "address" and settings.geo_location and returned_dict["processed"]:
