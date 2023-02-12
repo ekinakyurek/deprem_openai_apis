@@ -164,7 +164,6 @@ def query_with_retry(inputs: List[str], **kwargs) -> List[List[str]]:
     try:
         response = interact_with_api(openai.Completion.create, prompt=inputs, **kwargs)
     except Exception:
-        # TODO can main method handle this output?
         return [['{"status": "ERROR"}']] * len(inputs)
 
     return [
