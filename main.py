@@ -6,6 +6,7 @@ from fastapi import FastAPI
 import converter
 from config import Settings
 from models import IntentResponse, RequestIntent
+from tokenizer import GPTTokenizer
 
 
 app = FastAPI()
@@ -65,9 +66,16 @@ def convert(
     else:
         raise ValueError("Unknown information extraction requested")
 
+    def create_prompt(text, template):
+        template_token_count = GPTTokenizer.token_count(template)
+        text_max_token_count = GPTTokenizer.MAX_TOKENS - template_token_count
+        truncated_text = GPTTokenizer.truncate(text, text_max_token_count)
+        return template.format(ocr_input=truncated_text)
+
     text_inputs = []
     for tweet in inputs:
-        text_inputs.append(template.format(ocr_input=tweet))
+        text_inputs.append(create_prompt(text=tweet, template=template))
+
     outputs = converter.query_with_retry(
         text_inputs,
         engine=settings.engine,
