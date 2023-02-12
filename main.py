@@ -6,10 +6,12 @@ from typing import List
 from fastapi import FastAPI
 import converter
 from config import Settings
+from logger import setup_logging
 from models import IntentResponse, RequestIntent
 from tokenizer import GPTTokenizer
 
 
+setup_logging()
 app = FastAPI()
 
 

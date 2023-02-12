@@ -1,14 +1,8 @@
 import asyncio
-from contextlib import contextmanager
+import nest_asyncio
 
 
-@contextmanager
-def new_event_loop():
-    loop = asyncio.new_event_loop()
-    try:
-        yield loop
-    finally:
-        loop.close()
+nest_asyncio.apply()
 
 
 async def complete_async_tasks(tasks):
@@ -25,5 +19,5 @@ async def complete_async_tasks(tasks):
 
 
 def run_async_tasks(tasks):
-    with new_event_loop() as loop:
-        return loop.run_until_complete(complete_async_tasks(tasks))
+    loop = asyncio.get_event_loop()
+    return loop.run_until_complete(complete_async_tasks(tasks))

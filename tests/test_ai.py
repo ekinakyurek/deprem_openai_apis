@@ -1,5 +1,9 @@
+import logging
 from fastapi.testclient import TestClient
 from main import app
+
+
+logger = logging.getLogger(__name__)
 
 
 client = TestClient(app=app)
@@ -22,6 +26,7 @@ def test_intent():
     assert isinstance(outputs, list)
 
     for obj in outputs:
+        logger.debug(obj)
         assert isinstance(obj, dict)
         assert "string" in obj
         assert "processed" in obj

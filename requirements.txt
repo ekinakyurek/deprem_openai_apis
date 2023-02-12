@@ -52,3 +52,4 @@ watchfiles==0.18.1
 websockets==10.4
 yarl==1.8.2
 transformers==4.26.1
+nest_asyncio==1.5.6
