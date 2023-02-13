@@ -3,13 +3,12 @@ import os
 import re
 from functools import lru_cache
 from typing import List
-from fastapi import FastAPI
+from fastapi import FastAPI, Request, HTTPException
 import converter
 from config import Settings
 from logger import setup_logging
 from models import IntentResponse, RequestIntent
 from tokenizer import GPTTokenizer
-
 
 setup_logging()
 app = FastAPI()
@@ -42,9 +41,9 @@ def get_settings(pid: int):
 
 
 def convert(
-    info: str,
-    inputs: List[str],
-    settings: Settings,
+        info: str,
+        inputs: List[str],
+        settings: Settings,
 ):
     if info == "address":
         template = settings.address_template
@@ -125,7 +124,17 @@ def convert(
 
 
 @app.post("/intent-extractor/", response_model=IntentResponse)
-async def intent(payload: RequestIntent):
+async def intent(payload: RequestIntent, req: Request):
+    correct_token = os.getenv("NEEDS_RESOLVER_API_KEY", None)
+    if correct_token is None:
+        raise Exception("token not found in env files!")
+    coming_token = req.headers["Authorization"]
+    # Here your code for verifying the token or whatever you use
+    if coming_token != 'Bearer ' + correct_token:
+        raise HTTPException(
+            status_code=401,
+            detail="Unauthorized"
+        )
     pid = int(os.getpid())
     settings = get_settings(pid)
     inputs = payload.dict()["inputs"]
