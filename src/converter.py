@@ -7,7 +7,7 @@ import openai
 import requests
 from absl import app, flags, logging
 from tqdm import tqdm
-from src.concurrent.network_manager import interact_with_api
+from src.openai.network_manager import interact_with_api
 
 
 FLAGS = flags.FLAGS
@@ -123,7 +123,7 @@ def postprocess_for_intent_v2(intent):
         detailed_intent, intent = m
         
         detailed_intent_tags = [
-            tr_lower(tag.strip()) for tag in detailed_intent.split(",")
+            tr_lower(TAG_MAP.get(tag.strip(), tag.strip())).lower() for tag in detailed_intent.split(",")
         ]
         intent_tags = [
             TAG_MAP.get(tag.strip(), tag.strip()) for tag in intent.split(",")

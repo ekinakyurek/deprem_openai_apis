@@ -5,7 +5,7 @@ tokenizer = AutoTokenizer.from_pretrained("gpt2")
 
 
 class GPTTokenizer:
-    MAX_TOKENS = 2047
+    MAX_TOKENS = 4096
 
     @classmethod
     def token_count(cls, text: str) -> int:

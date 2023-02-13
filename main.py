@@ -79,17 +79,20 @@ def convert(
         # remove consequent spaces
         return re.sub(r"\s+", " ", url_removed)
 
-    def create_prompt(text, template) -> str:
+    def create_prompt(text:str, template: str, max_tokens: int) -> str:
         template_token_count = GPTTokenizer.token_count(template)
+        text_input = template.format(ocr_input=preprocess_tweet(text))
+        
         truncated_text = GPTTokenizer.truncate(
-            preprocess_tweet(text),
-            max_tokens=GPTTokenizer.MAX_TOKENS - template_token_count,
+            text_input,
+            max_tokens=GPTTokenizer.MAX_TOKENS - max_tokens,
         )
-        return template.format(ocr_input=truncated_text)
+        
+        return truncated_text
 
     text_inputs = []
     for tweet in inputs:
-        text_inputs.append(create_prompt(text=tweet, template=template))
+        text_inputs.append(create_prompt(text=tweet, template=template, max_tokens=max_tokens))
 
     outputs = converter.query_with_retry(
         text_inputs,
