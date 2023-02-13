@@ -116,7 +116,7 @@
   ],
   "networkMode": "awsvpc",
   "runtimePlatform": null,
-  "cpu": "1024",
+  "cpu": "4096",
   "revision": 1,
   "status": "ACTIVE",
   "inferenceAccelerators": null,
