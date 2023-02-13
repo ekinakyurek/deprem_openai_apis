@@ -3,7 +3,7 @@ import os
 from functools import lru_cache
 from typing import List
 import openai
-from fastapi import Depends, FastAPI
+from fastapi import Depends, FastAPI, HTTPException
 from pydantic import BaseModel, Field
 import converter
 from config import Settings
@@ -103,7 +103,11 @@ def convert(
 
 @app.post("/intent-extractor/", response_model=IntentResponse)
 async def intent(payload: RequestIntent):
-    settings = get_settings()
-    inputs = payload.dict()["inputs"]
-    outputs = convert("detailed_intent_v2", inputs, settings)
+    try:
+        settings = get_settings()
+        inputs = payload.dict()["inputs"]
+        outputs = convert("detailed_intent_v2", inputs, settings)
+    except Exception as error:
+        raise HTTPException(status_code=500, detail=f"An error occurred: {error}")
+
     return {"response": outputs}
