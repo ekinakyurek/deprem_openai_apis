@@ -3,7 +3,7 @@ import os
 import re
 from functools import lru_cache
 from typing import List
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 import converter
 from config import Settings
 from logger import setup_logging
@@ -126,10 +126,14 @@ def convert(
 
 @app.post("/intent-extractor/", response_model=IntentResponse)
 async def intent(payload: RequestIntent):
-    pid = int(os.getpid())
-    settings = get_settings(pid)
-    inputs = payload.dict()["inputs"]
-    outputs = convert("detailed_intent_v2", inputs, settings)
+    try:
+        pid = int(os.getpid())
+        settings = get_settings(pid)
+        inputs = payload.dict()["inputs"]
+        outputs = convert("detailed_intent_v2", inputs, settings)
+    except Exception as error:
+        raise HTTPException(status_code=500, detail=f"An error occurred: {error}")
+
     return {"response": outputs}
 
 
