@@ -13,7 +13,7 @@ from openai.error import (
     ServiceUnavailableError,
     TryAgain,
 )
-from asynchronous import run_async_tasks
+# from src.concurrent.asynchronous import run_async_tasks
 
 
 logger = logging.getLogger(__name__)
@@ -73,9 +73,9 @@ class OpenAINetworkManager:
         return wrapper
 
 
-def interact_with_api(func, *args, **kwargs):
+async def interact_with_api(func, *args, **kwargs):
     @OpenAINetworkManager.async_retry_with_exp_backoff
     def interact():
         return func(*args, **kwargs)
 
-    return run_async_tasks([interact])[0]
+    return await interact()

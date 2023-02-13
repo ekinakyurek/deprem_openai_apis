@@ -7,7 +7,7 @@ import openai
 import requests
 from absl import app, flags, logging
 from tqdm import tqdm
-from network_manager import interact_with_api
+from src.openai.network_manager import interact_with_api
 
 
 FLAGS = flags.FLAGS
@@ -97,6 +97,16 @@ TAG_MAP = {
 }
 
 
+CHARMAP = {
+    u"I": u"ı",
+    u"İ": u"i",
+}
+
+def tr_lower(text):
+    for c1, c2 in CHARMAP.items():
+        text = text.replace(c1, c2)
+    return text
+    
 def postprocess_for_intent(intent):
     m = re.search(r"(?<=\[).+?(?=\])", intent)
     if m:
@@ -111,9 +121,9 @@ def postprocess_for_intent_v2(intent):
     m = re.findall(r"(?<=\[).+?(?=\])", intent)
     if m and len(m) == 2:
         detailed_intent, intent = m
-
+        
         detailed_intent_tags = [
-            TAG_MAP.get(tag.strip(), tag.strip()) for tag in detailed_intent.split(",")
+            tr_lower(TAG_MAP.get(tag.strip(), tag.strip())).lower() for tag in detailed_intent.split(",")
         ]
         intent_tags = [
             TAG_MAP.get(tag.strip(), tag.strip()) for tag in intent.split(",")
@@ -158,11 +168,11 @@ def get_address_str(address):
     return address_str.strip()
 
 
-def query_with_retry(inputs: List[str], **kwargs) -> List[List[str]]:
+async def query_with_retry(inputs: List[str], **kwargs) -> List[List[str]]:
     """Queries GPT API up to max_retry time to get the responses."""
 
     try:
-        response = interact_with_api(openai.Completion.create, prompt=inputs, **kwargs)
+        response = await interact_with_api(openai.Completion.create, prompt=inputs, **kwargs)
     except Exception:
         return [['{"status": "ERROR"}']] * len(inputs)
 
@@ -235,7 +245,7 @@ def get_geo_result(key, address):
         logging.warning(response.content)
 
 
-def main(_):
+async def main(_):
     setup_openai(FLAGS.worker_id)
     if FLAGS.geo_location:
         geo_key = setup_geocoding(FLAGS.worker_id)
@@ -269,7 +279,8 @@ def main(_):
         raw_inputs.append(row)
 
         if (index + 1) % FLAGS.batch_size == 0 or index == len(raw_data) - 1:
-            outputs = query_with_retry(
+            # to not throttle api key limits with parallel queries?
+            outputs = await query_with_retry(
                 text_inputs,
                 engine=FLAGS.engine,
                 max_tokens=FLAGS.max_tokens,
