@@ -4,11 +4,11 @@ import re
 from functools import lru_cache
 from typing import List
 from fastapi import FastAPI
-import converter
-from config import Settings
-from logger import setup_logging
-from models import IntentResponse, RequestIntent
-from tokenizer import GPTTokenizer
+import src.converter as converter
+from src.config import Settings
+from src.logger import setup_logging
+from src.models import IntentResponse, RequestIntent
+from src.lm.tokenizer import GPTTokenizer
 
 
 setup_logging()

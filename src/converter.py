@@ -7,7 +7,7 @@ import openai
 import requests
 from absl import app, flags, logging
 from tqdm import tqdm
-from network_manager import interact_with_api
+from src.concurrent.network_manager import interact_with_api
 
 
 FLAGS = flags.FLAGS
@@ -97,6 +97,16 @@ TAG_MAP = {
 }
 
 
+CHARMAP = {
+    u"I": u"ı",
+    u"İ": u"i",
+}
+
+def tr_lower(text):
+    for c1, c2 in CHARMAP.items():
+        text = text.replace(c1, c2)
+    return text
+    
 def postprocess_for_intent(intent):
     m = re.search(r"(?<=\[).+?(?=\])", intent)
     if m:
@@ -111,9 +121,9 @@ def postprocess_for_intent_v2(intent):
     m = re.findall(r"(?<=\[).+?(?=\])", intent)
     if m and len(m) == 2:
         detailed_intent, intent = m
-
+        
         detailed_intent_tags = [
-            TAG_MAP.get(tag.strip(), tag.strip()) for tag in detailed_intent.split(",")
+            tr_lower(tag.strip()) for tag in detailed_intent.split(",")
         ]
         intent_tags = [
             TAG_MAP.get(tag.strip(), tag.strip()) for tag in intent.split(",")

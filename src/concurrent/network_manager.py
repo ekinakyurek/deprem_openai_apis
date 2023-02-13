@@ -13,7 +13,7 @@ from openai.error import (
     ServiceUnavailableError,
     TryAgain,
 )
-from asynchronous import run_async_tasks
+from src.concurrent.asynchronous import run_async_tasks
 
 
 logger = logging.getLogger(__name__)
