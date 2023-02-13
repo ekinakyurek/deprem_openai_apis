@@ -64,7 +64,7 @@
     }
   ],
   "placementConstraints": [],
-  "memory": "2048",
+  "memory": "8192",
   "taskRoleArn": null,
   "compatibilities": [
     "EC2",
