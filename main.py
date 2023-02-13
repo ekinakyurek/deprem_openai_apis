@@ -1,18 +1,22 @@
 import logging
 import os
+import re
 from functools import lru_cache
 from typing import List
-import openai
-from fastapi import Depends, FastAPI, HTTPException
-from pydantic import BaseModel, Field
+from fastapi import FastAPI, HTTPException
 import converter
 from config import Settings
+from logger import setup_logging
 from models import IntentResponse, RequestIntent
+from tokenizer import GPTTokenizer
 
+
+setup_logging()
 app = FastAPI()
 
-@lru_cache()
-def get_settings():
+
+@lru_cache(maxsize=None)
+def get_settings(pid: int):
     settings = Settings()
 
     with open(settings.address_prompt_file) as handle:
@@ -30,7 +34,7 @@ def get_settings():
     if settings.geo_location:
         settings.geo_key = converter.setup_geocoding()
 
-    converter.setup_openai(int(os.getpid()) % settings.num_workers)
+    converter.setup_openai(pid % settings.num_workers)
 
     logging.warning(f"Engine {settings.engine}")
 
@@ -65,9 +69,28 @@ def convert(
     else:
         raise ValueError("Unknown information extraction requested")
 
+    def preprocess_tweet(text: str) -> str:
+        mention_pattern = r"@\w+"
+        url_pattern = r"(\w+?://)?(?:www\.)?[-a-zA-Z0-9@:%._\\+~#=]{1,256}\.[a-zA-Z]{1,10}\b(?:[-a-zA-Z0-9()@:%_\\+.~#?&\\/=]*)"
+        # remove mentions
+        mentions_removed = re.sub(mention_pattern, " ", text)
+        # remove urls
+        url_removed = re.sub(url_pattern, "", mentions_removed)
+        # remove consequent spaces
+        return re.sub(r"\s+", " ", url_removed)
+
+    def create_prompt(text, template) -> str:
+        template_token_count = GPTTokenizer.token_count(template)
+        truncated_text = GPTTokenizer.truncate(
+            preprocess_tweet(text),
+            max_tokens=GPTTokenizer.MAX_TOKENS - template_token_count,
+        )
+        return template.format(ocr_input=truncated_text)
+
     text_inputs = []
     for tweet in inputs:
-        text_inputs.append(template.format(ocr_input=tweet))
+        text_inputs.append(create_prompt(text=tweet, template=template))
+
     outputs = converter.query_with_retry(
         text_inputs,
         engine=settings.engine,
@@ -87,8 +110,8 @@ def convert(
             returned_dict["processed"] = converter.postprocess(info, output[0])
         except Exception as e:
             returned_dict["processed"] = {
-                "intent": [""],
-                "detailed_intent_tags": [""],
+                "intent": [],
+                "detailed_intent_tags": [],
             }
             logging.warning(f"Parsing error in {output},\n {e}")
 
@@ -104,10 +127,16 @@ def convert(
 @app.post("/intent-extractor/", response_model=IntentResponse)
 async def intent(payload: RequestIntent):
     try:
-        settings = get_settings()
+        pid = int(os.getpid())
+        settings = get_settings(pid)
         inputs = payload.dict()["inputs"]
         outputs = convert("detailed_intent_v2", inputs, settings)
     except Exception as error:
         raise HTTPException(status_code=500, detail=f"An error occurred: {error}")
 
     return {"response": outputs}
+
+
+@app.get("/health")
+async def health():
+    return {"status": "living the dream"}
