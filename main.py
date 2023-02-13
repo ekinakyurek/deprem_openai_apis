@@ -4,11 +4,11 @@ import re
 from functools import lru_cache
 from typing import List
 from fastapi import FastAPI, Request, HTTPException
-import converter
-from config import Settings
-from logger import setup_logging
-from models import IntentResponse, RequestIntent
-from tokenizer import GPTTokenizer
+import src.converter as converter
+from src.config import Settings
+from src.logger import setup_logging
+from src.models import IntentResponse, RequestIntent
+from src.lm.tokenizer import GPTTokenizer
 
 setup_logging()
 app = FastAPI()
@@ -40,7 +40,7 @@ def get_settings(pid: int):
     return settings
 
 
-def convert(
+async def convert(
         info: str,
         inputs: List[str],
         settings: Settings,
@@ -78,19 +78,22 @@ def convert(
         # remove consequent spaces
         return re.sub(r"\s+", " ", url_removed)
 
-    def create_prompt(text, template) -> str:
+    def create_prompt(text: str, template: str, max_tokens: int) -> str:
         template_token_count = GPTTokenizer.token_count(template)
+        text_input = template.format(ocr_input=preprocess_tweet(text))
+
         truncated_text = GPTTokenizer.truncate(
-            preprocess_tweet(text),
-            max_tokens=GPTTokenizer.MAX_TOKENS - template_token_count,
+            text_input,
+            max_tokens=GPTTokenizer.MAX_TOKENS - max_tokens,
         )
-        return template.format(ocr_input=truncated_text)
+
+        return truncated_text
 
     text_inputs = []
     for tweet in inputs:
-        text_inputs.append(create_prompt(text=tweet, template=template))
+        text_inputs.append(create_prompt(text=tweet, template=template, max_tokens=max_tokens))
 
-    outputs = converter.query_with_retry(
+    outputs = await converter.query_with_retry(
         text_inputs,
         engine=settings.engine,
         temperature=temperature,
@@ -138,7 +141,7 @@ async def intent(payload: RequestIntent, req: Request):
     pid = int(os.getpid())
     settings = get_settings(pid)
     inputs = payload.dict()["inputs"]
-    outputs = convert("detailed_intent_v2", inputs, settings)
+    outputs = await convert("detailed_intent_v2", inputs, settings)
     return {"response": outputs}
 
 
