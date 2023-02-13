@@ -279,6 +279,7 @@ def main(_):
         raw_inputs.append(row)
 
         if (index + 1) % FLAGS.batch_size == 0 or index == len(raw_data) - 1:
+            # to not throttle api key limits with parallel queries?
             outputs = query_with_retry(
                 text_inputs,
                 engine=FLAGS.engine,

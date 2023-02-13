@@ -125,7 +125,7 @@ def convert(
 
 
 @app.post("/intent-extractor/", response_model=IntentResponse)
-async def intent(payload: RequestIntent):
+def intent(payload: RequestIntent):
     pid = int(os.getpid())
     settings = get_settings(pid)
     inputs = payload.dict()["inputs"]
@@ -134,5 +134,5 @@ async def intent(payload: RequestIntent):
 
 
 @app.get("/health")
-async def health():
+def health():
     return {"status": "living the dream"}

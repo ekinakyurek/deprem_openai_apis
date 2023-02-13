@@ -13,7 +13,7 @@ from openai.error import (
     ServiceUnavailableError,
     TryAgain,
 )
-from src.concurrent.asynchronous import run_async_tasks
+# from src.concurrent.asynchronous import run_async_tasks
 
 
 logger = logging.getLogger(__name__)
@@ -32,7 +32,7 @@ class OpenAINetworkManager:
     @staticmethod
     def async_retry_with_exp_backoff(task):
         @wraps(task)
-        async def wrapper(*args, **kwargs):
+        def wrapper(*args, **kwargs):
             for i in range(OPENAI_MAX_RETRY + 1):
                 wait_time = (1 << min(i, OPENAI_EXP_CAP)) + random() / 10
                 try:
@@ -53,7 +53,7 @@ class OpenAINetworkManager:
                         logger.warning(
                             f"Waiting {round(wait_time, 2)} seconds for API...",
                         )
-                        await asyncio.sleep(wait_time)
+                        sleep(wait_time)
                 except AuthenticationError as e:
                     # No way to handle
                     logger.error(f"AuthenticationError: {str(e)}")
@@ -78,4 +78,4 @@ def interact_with_api(func, *args, **kwargs):
     def interact():
         return func(*args, **kwargs)
 
-    return run_async_tasks([interact])[0]
+    return interact()
