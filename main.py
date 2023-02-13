@@ -10,7 +10,6 @@ from src.logger import setup_logging
 from src.models import IntentResponse, RequestIntent
 from src.lm.tokenizer import GPTTokenizer
 
-
 setup_logging()
 app = FastAPI()
 
@@ -82,12 +81,12 @@ async def convert(
     def create_prompt(text:str, template: str, max_tokens: int) -> str:
         template_token_count = GPTTokenizer.token_count(template)
         text_input = template.format(ocr_input=preprocess_tweet(text))
-        
+
         truncated_text = GPTTokenizer.truncate(
             text_input,
             max_tokens=GPTTokenizer.MAX_TOKENS - max_tokens,
         )
-        
+
         return truncated_text
 
     text_inputs = []

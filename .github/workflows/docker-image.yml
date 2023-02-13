@@ -7,6 +7,7 @@ on:
 env:
   OPENAI_API_BASE_POOL: ${{ secrets.OPENAI_API_BASE_POOL }}
   OPENAI_API_KEY_POOL: ${{ secrets.OPENAI_API_KEY_POOL }}
+  NEEDS_RESOLVER_API_KEY: ${{ secrets.NEEDS_RESOLVER_API_KEY }}
 
 jobs:
   deploy:
@@ -43,7 +44,7 @@ jobs:
           # push it to ECR so that it can
           # be deployed to ECS.
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
-          docker run --rm -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG sh -c "OPENAI_API_BASE_POOL=${OPENAI_API_BASE_POOL} OPENAI_API_KEY_POOL=${OPENAI_API_KEY_POOL} pytest --verbose -s"
+          docker run -e NEEDS_RESOLVER_API_KEY=${NEEDS_RESOLVER_API_KEY} --rm -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG sh -c "OPENAI_API_BASE_POOL=${OPENAI_API_BASE_POOL} OPENAI_API_KEY_POOL=${OPENAI_API_KEY_POOL} pytest --verbose -s"
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
 
@@ -61,4 +62,4 @@ jobs:
           task-definition: ${{ steps.task-def.outputs.task-definition }}
           service: deprem-openai-api-service
           cluster: base-cluster
-          wait-for-service-stability: true
+          wait-for-service-stability: false
