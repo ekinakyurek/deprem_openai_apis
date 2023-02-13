@@ -1,10 +1,10 @@
 import logging
+import os
+
 from fastapi.testclient import TestClient
 from main import app
 
-
 logger = logging.getLogger(__name__)
-
 
 client = TestClient(app=app)
 
@@ -20,7 +20,9 @@ PAYLOAD = {
 
 
 def test_intent():
-    response = client.post("/intent-extractor/", json=PAYLOAD)
+    correct_token = os.getenv("NEEDS_RESOLVER_API_KEY")
+    headers = {"Authorization": f"Bearer {correct_token}"}
+    response = client.post("/intent-extractor/", json=PAYLOAD, headers=headers)
     assert response.status_code == 200
     outputs = response.json()["response"]
     assert isinstance(outputs, list)
