@@ -41,7 +41,7 @@ def get_settings(pid: int):
     return settings
 
 
-def convert(
+async def convert(
     info: str,
     inputs: List[str],
     settings: Settings,
@@ -94,7 +94,7 @@ def convert(
     for tweet in inputs:
         text_inputs.append(create_prompt(text=tweet, template=template, max_tokens=max_tokens))
 
-    outputs = converter.query_with_retry(
+    outputs = await converter.query_with_retry(
         text_inputs,
         engine=settings.engine,
         temperature=temperature,
@@ -128,11 +128,11 @@ def convert(
 
 
 @app.post("/intent-extractor/", response_model=IntentResponse)
-def intent(payload: RequestIntent):
+async def intent(payload: RequestIntent):
     pid = int(os.getpid())
     settings = get_settings(pid)
     inputs = payload.dict()["inputs"]
-    outputs = convert("detailed_intent_v2", inputs, settings)
+    outputs = await convert("detailed_intent_v2", inputs, settings)
     return {"response": outputs}
 
 

@@ -168,11 +168,11 @@ def get_address_str(address):
     return address_str.strip()
 
 
-def query_with_retry(inputs: List[str], **kwargs) -> List[List[str]]:
+async def query_with_retry(inputs: List[str], **kwargs) -> List[List[str]]:
     """Queries GPT API up to max_retry time to get the responses."""
 
     try:
-        response = interact_with_api(openai.Completion.create, prompt=inputs, **kwargs)
+        response = await interact_with_api(openai.Completion.create, prompt=inputs, **kwargs)
     except Exception:
         return [['{"status": "ERROR"}']] * len(inputs)
 
@@ -245,7 +245,7 @@ def get_geo_result(key, address):
         logging.warning(response.content)
 
 
-def main(_):
+async def main(_):
     setup_openai(FLAGS.worker_id)
     if FLAGS.geo_location:
         geo_key = setup_geocoding(FLAGS.worker_id)
@@ -280,7 +280,7 @@ def main(_):
 
         if (index + 1) % FLAGS.batch_size == 0 or index == len(raw_data) - 1:
             # to not throttle api key limits with parallel queries?
-            outputs = query_with_retry(
+            outputs = await query_with_retry(
                 text_inputs,
                 engine=FLAGS.engine,
                 max_tokens=FLAGS.max_tokens,

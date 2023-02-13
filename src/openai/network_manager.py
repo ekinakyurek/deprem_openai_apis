@@ -32,7 +32,7 @@ class OpenAINetworkManager:
     @staticmethod
     def async_retry_with_exp_backoff(task):
         @wraps(task)
-        def wrapper(*args, **kwargs):
+        async def wrapper(*args, **kwargs):
             for i in range(OPENAI_MAX_RETRY + 1):
                 wait_time = (1 << min(i, OPENAI_EXP_CAP)) + random() / 10
                 try:
@@ -53,7 +53,7 @@ class OpenAINetworkManager:
                         logger.warning(
                             f"Waiting {round(wait_time, 2)} seconds for API...",
                         )
-                        sleep(wait_time)
+                        await asyncio.sleep(wait_time)
                 except AuthenticationError as e:
                     # No way to handle
                     logger.error(f"AuthenticationError: {str(e)}")
@@ -73,9 +73,9 @@ class OpenAINetworkManager:
         return wrapper
 
 
-def interact_with_api(func, *args, **kwargs):
+async def interact_with_api(func, *args, **kwargs):
     @OpenAINetworkManager.async_retry_with_exp_backoff
     def interact():
         return func(*args, **kwargs)
 
-    return interact()
+    return await interact()
