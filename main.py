@@ -3,7 +3,7 @@ import os
 import re
 from functools import lru_cache
 from typing import List
-from fastapi import FastAPI
+from fastapi import FastAPI, Request, HTTPException
 import src.converter as converter
 from src.config import Settings
 from src.logger import setup_logging
@@ -128,12 +128,24 @@ async def convert(
 
 
 @app.post("/intent-extractor/", response_model=IntentResponse)
-async def intent(payload: RequestIntent):
+async def intent(payload: RequestIntent, req: Request):
+    correct_token = os.getenv("NEEDS_RESOLVER_API_KEY", None)
+    if correct_token is None:
+        raise Exception("token not found in env files!")
+    coming_token = req.headers["Authorization"]
+    # Here your code for verifying the token or whatever you use
+    if coming_token != 'Bearer ' + correct_token:
+        raise HTTPException(
+            status_code=401,
+            detail="Unauthorized"
+        )
     pid = int(os.getpid())
     settings = get_settings(pid)
     inputs = payload.dict()["inputs"]
-    outputs = await convert("detailed_intent_v2", inputs, settings)
+    outputs = convert("detailed_intent_v2", inputs, settings)
     return {"response": outputs}
+
+
 
 
 @app.get("/health")
