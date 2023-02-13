@@ -61,4 +61,4 @@ jobs:
           task-definition: ${{ steps.task-def.outputs.task-definition }}
           service: deprem-openai-api-service
           cluster: base-cluster
-          wait-for-service-stability: true
+          wait-for-service-stability: false
