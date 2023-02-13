@@ -41,9 +41,9 @@ def get_settings(pid: int):
 
 
 async def convert(
-    info: str,
-    inputs: List[str],
-    settings: Settings,
+        info: str,
+        inputs: List[str],
+        settings: Settings,
 ):
     if info == "address":
         template = settings.address_template
@@ -78,7 +78,7 @@ async def convert(
         # remove consequent spaces
         return re.sub(r"\s+", " ", url_removed)
 
-    def create_prompt(text:str, template: str, max_tokens: int) -> str:
+    def create_prompt(text: str, template: str, max_tokens: int) -> str:
         template_token_count = GPTTokenizer.token_count(template)
         text_input = template.format(ocr_input=preprocess_tweet(text))
 
@@ -141,10 +141,8 @@ async def intent(payload: RequestIntent, req: Request):
     pid = int(os.getpid())
     settings = get_settings(pid)
     inputs = payload.dict()["inputs"]
-    outputs = convert("detailed_intent_v2", inputs, settings)
+    outputs = await convert("detailed_intent_v2", inputs, settings)
     return {"response": outputs}
-
-
 
 
 @app.get("/health")
