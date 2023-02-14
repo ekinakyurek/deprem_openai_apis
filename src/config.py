@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, List
 from pydantic import BaseSettings
 
 
@@ -12,6 +12,7 @@ class Settings(BaseSettings):
     detailed_intent_template: Optional[str] = None
     detailed_intent_template_v2: Optional[str] = None
     geo_key: Optional[str] = None
+    openai_keys: Optional[List[str]] = None
     address_max_tokens: int = 384
     intent_max_tokens: int = 100
     detailed_intent_max_tokens: int = 50
