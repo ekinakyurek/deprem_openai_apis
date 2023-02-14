@@ -1,8 +1,9 @@
+import asyncio
 import logging
 import os
 import re
 from functools import lru_cache
-from typing import List
+from typing import List, Optional
 from fastapi import FastAPI, Request, HTTPException
 import src.converter as converter
 from src.config import Settings
@@ -10,9 +11,11 @@ from src.logger import setup_logging
 from src.models import IntentResponse, RequestIntent
 from src.lm.tokenizer import GPTTokenizer
 
+
 setup_logging()
 app = FastAPI()
-
+rotator = 0
+lock = asyncio.Lock()
 
 @lru_cache(maxsize=None)
 def get_settings(pid: int):
@@ -33,7 +36,7 @@ def get_settings(pid: int):
     if settings.geo_location:
         settings.geo_key = converter.setup_geocoding()
 
-    converter.setup_openai(pid % settings.num_workers)
+    settings.openai_keys = converter.setup_openai(pid % settings.num_workers)
 
     logging.warning(f"Engine {settings.engine}")
 
@@ -44,6 +47,7 @@ async def convert(
         info: str,
         inputs: List[str],
         settings: Settings,
+        api_key: Optional[str] = None,
 ):
     if info == "address":
         template = settings.address_template
@@ -80,14 +84,15 @@ async def convert(
 
     def create_prompt(text: str, template: str, max_tokens: int) -> str:
         template_token_count = GPTTokenizer.token_count(template)
-        text_input = template.format(ocr_input=preprocess_tweet(text))
+
+        preprocessed_text = preprocess_tweet(text)
 
         truncated_text = GPTTokenizer.truncate(
-            text_input,
-            max_tokens=GPTTokenizer.MAX_TOKENS - max_tokens,
+            preprocessed_text,
+            max_tokens=GPTTokenizer.MAX_TOKENS - max_tokens - template_token_count,
         )
 
-        return truncated_text
+        return template.format(ocr_input=truncated_text)
 
     text_inputs = []
     for tweet in inputs:
@@ -95,6 +100,7 @@ async def convert(
 
     outputs = await converter.query_with_retry(
         text_inputs,
+        api_key=api_key,
         engine=settings.engine,
         temperature=temperature,
         max_tokens=max_tokens,
@@ -138,10 +144,18 @@ async def intent(payload: RequestIntent, req: Request):
             status_code=401,
             detail="Unauthorized"
         )
-    pid = int(os.getpid())
-    settings = get_settings(pid)
+
+    settings = get_settings(os.getpid())
+
     inputs = payload.dict()["inputs"]
-    outputs = await convert("detailed_intent_v2", inputs, settings)
+
+    global rotator
+    async with lock:
+        rotator = (rotator + 1) % len(settings.openai_keys)
+
+    api_key = settings.openai_keys[rotator]
+
+    outputs = await convert("detailed_intent_v2", inputs, settings, api_key=api_key)
     return {"response": outputs}
 
 

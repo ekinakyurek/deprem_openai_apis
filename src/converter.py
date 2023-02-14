@@ -2,7 +2,7 @@ import json
 import os
 import re
 import urllib
-from typing import List
+from typing import List, Optional
 import openai
 import requests
 from absl import app, flags, logging
@@ -83,17 +83,20 @@ def postprocess_for_address(address):
 
 
 TAG_MAP = {
-    "ELECTRONICS": "Elektronik",
+    "POWER_SOURCE": "Elektrik Kaynagi",
     "WATER": "Su",
     "LOGISTICS": "Lojistik",
     "TRANSPORTATION": "Lojistik",
     "FOOD": "Yemek",
-    "RESCUE": "Kurtarma",
+    "RESCUE": "Enkaz Kaldirma",
     "HEALTH": "Saglik",
     "UNINFORMATIVE": "Alakasiz",
     "SHELTER": "Barinma",
-    "LOOTING": "Yagma",
+    "HEATING": "Isinma",
+    "RESCUE_ELECTRONICS": "Arama Ekipmani",
+    # "LOOTING": "Yagma",
     "CLOTHES": "Giysi",
+    "PORTABLE_TOILET": "Tuvalet"
 }
 
 
@@ -168,9 +171,10 @@ def get_address_str(address):
     return address_str.strip()
 
 
-async def query_with_retry(inputs: List[str], **kwargs) -> List[List[str]]:
+async def query_with_retry(inputs: List[str], api_key: Optional[str] = None, **kwargs) -> List[List[str]]:
     """Queries GPT API up to max_retry time to get the responses."""
-
+    if api_key:
+        openai.api_key = api_key
     try:
         response = await interact_with_api(openai.Completion.create, prompt=inputs, **kwargs)
     except Exception:
@@ -182,7 +186,7 @@ async def query_with_retry(inputs: List[str], **kwargs) -> List[List[str]]:
     ]
 
 
-def setup_openai(worker_id: int = 0):
+def setup_openai(worker_id: int = 0) -> List[str]:
     logging.warning(f"worker id in open ai keys {worker_id}")
 
     try:
@@ -195,6 +199,7 @@ def setup_openai(worker_id: int = 0):
 
     assert len(openai_keys) > 0, "No keys specified in the environment variable"
 
+    # set the default key
     openai.api_key = openai_keys[worker_id % len(openai_keys)].strip()
 
     try:
@@ -211,6 +216,7 @@ def setup_openai(worker_id: int = 0):
             f" incosistent shapes, {msg}"
         )
 
+    return openai_keys
 
 def setup_geocoding(worker_id: int = 0):
     try:

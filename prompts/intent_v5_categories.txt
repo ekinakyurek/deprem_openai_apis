@@ -1,4 +1,5 @@
-# Intent Classification for Turkish Tweets
+# Find and categorize what people need from Turkish Tweets
+- Ignore links, address info. and hashtags.
 
 Input: 
 """
@@ -6,12 +7,21 @@ Feyzanur Alkan YAŞIYOR ACİL YARIM SAAT ÖNCE SES GELMİŞ KURTARILMAYI BEKLİY
 """
 
 Summary: 
-People need [jeneratör], tags are [ELECTRONICS]
+People need [jeneratör, hilti] to save other people, tags are [POWER_SOURCE, RESCUE]
+#END
+
+Input:
+"""
+@ProfDemirtas Gıda gereksinimi yokmuş..kadınların pet,iç çamaşırı,çocuk bzi..seyyar tuvalet..en önemlisi de acil ilaç..
+"""
+
+Summary: 
+People need [pet, iç çamaşırı, çocuk bezi, seyyar tuvalet], tags are [HEALTH, CLOTHES, PORTABLE_TOILET]
 #END
 
 Input: 
 """
-Lütfen önerileri dikkate alınÜLKEMİZDEKİ DEMİR VE KALIP USTALARINI ACİL ACİL CAĞIRIN GERGİN DEMİR KESME USTALIK İŞİDİR LÜTFEN USTALARIMIZI AÇİL TOPLAYIN DEPREM SAHALARINA SEVK EDİN
+Lütfen önerileri dikkate alın ÜLKEMİZDEKİ DEMİR VE KALIP USTALARINI ACİL ACİL CAĞIRIN GERGİN DEMİR KESME USTALIK İŞİDİR LÜTFEN USTALARIMIZI AÇİL TOPLAYIN DEPREM SAHALARINA SEVK EDİN
 """
 
 Summary:
@@ -24,16 +34,16 @@ Intput:
 """
 
 Summary:
-People need [insan gücü], tags are [LOGISTICS]
+People need [insan gücü] for packaging, tags are [LOGISTICS]
 #END
 
-Intput:
+Input:
 """
-yagma talan saldırısı varmış duyumlara göre acil güvenlik tedbirleri acill!! halkın can ve mal güvenligi sizlerin ve içişlerinin görev alanıdır,syn,
+❗VİNÇ VE TERMAL KAMERA LAZIM ❗@AFADBaskanlik @ahbap @ahbaphatay @AFADHatay @ibbhabercomtr @chpgenclikgm @AKUT_Dernegi
 """
 
 Summary:
-People need [yagma, güvenlik tedbiri], tags are [LOOTING]
+People need [vinç, termal kamera], tags are [RESCUE, RESCUE_ELECTRONICS]
 #END
 
 Intput:
@@ -42,7 +52,7 @@ Intput:
 """
 
 Summary: 
-People need [hijyen malzemesi, mama, battaniye, el feneri, çocuk bezi], tags are [HEALTH, FOOD, SHELTER, ELECTRONICS, CLOTHES]
+People need [hijyen malzemesi, mama, battaniye, el feneri, powerbank, çocuk bezi], tags are [HEALTH, FOOD, CLOTHES, POWER_SOURCE]
 #END
 
 Intput:
@@ -52,6 +62,15 @@ ARKADAŞLAR LÜTFEN 20 kişilik aileye çadır lazım lütfen yardım edin
 
 Summary: 
 People need [çadır], tags are [SHELTER]
+#END
+
+Input:
+"""
+Arkadaşlar Hataydan arkadaşım yazdı. Cenazeleri poşetle defnediyorlarmış. Çok acil kefen ihtiyacı varmış. Lütfen yayalı
+"""
+
+Summary:
+People need [kefen] for burial, tags are [SHROUD]
 #END
 
 Input: 
@@ -78,13 +97,13 @@ Summary:
 People need [ilaç, Topamax], tags are [HEALTH]
 #END
 
-Intput:
+Input:
 """
-"Ve acil operatörlerin devreye girmesi lazım iletişim yok , konum paylaşımları yapılamıyor insanlara ulaşılamıyor. #hatay #deprem"
+KAHRAMANMARAŞ PAZARCIK ÖRDEKDEDE KÖYÜNE ACİL ÇADIR - BATTANİYE - ISITICI GEREKİYOR İNSANLAR 4 GÜNDÜR DIŞARDA SOGUKTA YATIYORLAR ACİLLL.    @OguzhanUgur @haluklevent @AFADBaskanlik
 """
 
-Summary: 
-People need [operatör], tags are [ELECTRONICS]
+Summary:
+People need [ısıtıcı], tags are [HEATING]
 #END
 
 Input: 
@@ -98,7 +117,7 @@ Summary:
 
 Intput:
 """
-"Acil çok acil bu konuma gıda şimdi konuştum #depremsondakika @ProfDemirtas @ahbap @haluklevent @OguzhanUgur  maps.google.com/?q=36.095760,3…"
+"Acil çok acil bu konuma gıda şimdi konuştum #depremsondakika @ProfDemirtas @ahbap @haluklevent @OguzhanUgur"
 """
 
 Summary: 
