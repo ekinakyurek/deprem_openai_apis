@@ -24,14 +24,8 @@ def get_settings(pid: int):
     with open(settings.address_prompt_file) as handle:
         settings.address_template = handle.read()
 
-    # with open(settings.intent_prompt_file) as handle:
-    #     settings.intent_template = handle.read()
-
-    # with open(settings.detailed_intent_prompt_file) as handle:
-    #     settings.detailed_intent_template = handle.read()
-
-    with open(settings.detailed_intent_prompt_file_v2) as handle:
-        settings.detailed_intent_template_v2 = handle.read()
+    with open(settings.detailed_intent_prompt_file) as handle:
+        settings.detailed_intent_template = handle.read()
 
     if settings.geo_location:
         settings.geo_key = converter.setup_geocoding()
@@ -54,19 +48,9 @@ async def convert(
         max_tokens = settings.address_max_tokens
         temperature = 0.1
         frequency_penalty = 0.3
-    # elif info == "intent":
-    #     template = settings.intent_template
-    #     max_tokens = settings.intent_max_tokens
-    #     temperature = 0.0
-    #     frequency_penalty = 0.0
-    # elif info == "detailed_intent":
-    #     template = settings.detailed_intent_template
-    #     max_tokens = settings.detailed_intent_max_tokens
-    #     temperature = 0.0
-    #     frequency_penalty = 0.0
-    elif info == "detailed_intent_v2":
-        template = settings.detailed_intent_template_v2
-        max_tokens = settings.detailed_intent_max_tokens_v2
+    elif info == "detailed_intent":
+        template = settings.detailed_intent_template
+        max_tokens = settings.detailed_intent_max_tokens
         temperature = 0.0
         frequency_penalty = 0.0
     else:
@@ -155,7 +139,7 @@ async def intent(payload: RequestIntent, req: Request):
 
     api_key = settings.openai_keys[rotator]
 
-    outputs = await convert("detailed_intent_v2", inputs, settings, api_key=api_key)
+    outputs = await convert("detailed_intent", inputs, settings, api_key=api_key)
     return {"response": outputs}
 
 

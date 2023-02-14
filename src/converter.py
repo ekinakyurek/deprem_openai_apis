@@ -146,11 +146,7 @@ def postprocess_for_intent_v2(intent):
 def postprocess(info, line):
     if info == "address":
         return postprocess_for_address(line)
-    elif info == "intent":
-        return postprocess_for_intent(line)
     elif info == "detailed_intent":
-        return postprocess_for_intent(line)
-    elif info == "detailed_intent_v2":
         return postprocess_for_intent_v2(line)
     else:
         raise ValueError("Unknown info type")
