@@ -4,7 +4,7 @@ from pydantic import BaseSettings
 
 class Settings(BaseSettings):
     address_prompt_file: str = "prompts/address.txt"
-    detailed_intent_prompt_file: str = "prompts/intent_v5_categories.txt"
+    detailed_intent_prompt_file: str = "prompts/detailed_intent.txt"
     address_template: Optional[str] = None
     detailed_intent_template: Optional[str] = None
     geo_key: Optional[str] = None
