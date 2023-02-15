@@ -23,6 +23,10 @@ def main(_):
             datum = json.loads(line)
             y_true = datum["label"]
             y_pred = datum["detailed_intent_json"]["intent"] #.split(",")
+            if "Alakasiz" in y_true:
+                del y_true[y_true.index("Alakasiz")]
+            if len(y_true) == 0:
+                continue
             true_values.append(y_true)
             pred_values.append(y_pred)
             print(

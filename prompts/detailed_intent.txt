@@ -1,6 +1,7 @@
 # Find and categorize what people need from Turkish Tweets
 - Ignore links, address info. and hashtags.
-- possible tags: [RESCUE, POWER_SOURCE, HEALTH, CLOTHES, PORTABLE_TOILET, LOGISTICS, FOOD, BURIAL, SHELTER, WATER, HEATING, UNINFORMATIVE]
+- possible tags: [RESCUE, POWER_SOURCE, HEALTH, CLOTHES, PORTABLE_TOILET, LOGISTICS, FOOD, BURIAL, SHELTER, WATER, HEATING]
+- Transportation related words "benzin", "araba", "mazot" are taged as LOGISTICS
 
 Input: 
 """
@@ -105,15 +106,6 @@ KAHRAMANMARAŞ PAZARCIK ÖRDEKDEDE KÖYÜNE ACİL ÇADIR - BATTANİYE - ISITICI 
 
 Summary:
 People need [ısıtıcı], tags are [HEATING]
-#END
-
-Input: 
-"""
-@Safderun42 Son dakika çoğu parti milletvekilleri bu ay ki maaşlarını deprem zedelere gönderme  kararı almış tebrik etmek lazım
-"""
-
-Summary:
-[UNINFORMATIVE], tags are [UNINFORMATIVE]
 #END
 
 Intput:
