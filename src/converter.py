@@ -1,3 +1,4 @@
+import asyncio
 import json
 import os
 import re
@@ -7,8 +8,8 @@ import openai
 import requests
 from absl import app, flags, logging
 from tqdm import tqdm
-from src.openai.network_manager import interact_with_api
-
+from src.gpt.network_manager import interact_with_api
+from src.lm.tokenizer import GPTTokenizer
 
 FLAGS = flags.FLAGS
 
@@ -91,10 +92,11 @@ TAG_MAP = {
     "RESCUE": "Enkaz Kaldirma",
     "HEALTH": "Saglik",
     "UNINFORMATIVE": "Alakasiz",
-    "SHELTER": "Barinma",
+    "SHELTER": "Barınma",
     "HEATING": "Isinma",
     "RESCUE_ELECTRONICS": "Arama Ekipmani",
     # "LOOTING": "Yagma",
+    "BURIAL": "Cenaze",
     "CLOTHES": "Giysi",
     "PORTABLE_TOILET": "Tuvalet"
 }
@@ -121,16 +123,19 @@ def postprocess_for_intent(intent):
 
 
 def postprocess_for_intent_v2(intent):
-    m = re.findall(r"(?<=\[).+?(?=\])", intent)
-    if m and len(m) == 2:
-        detailed_intent, intent = m
-        
+    matches = re.findall(r"(?<=\[).+?(?=\])", intent)
+    if matches:
+        detailed_intent = matches[0]
         detailed_intent_tags = [
             tr_lower(TAG_MAP.get(tag.strip(), tag.strip())).lower() for tag in detailed_intent.split(",")
         ]
-        intent_tags = [
-            TAG_MAP.get(tag.strip(), tag.strip()) for tag in intent.split(",")
-        ]
+        if len(matches) > 1:
+            intent = matches[1]
+            intent_tags = [
+                TAG_MAP.get(tag.strip(), tag.strip()) for tag in intent.split(",")
+            ]
+        else:
+            intent_tags = []
 
         return {
             "intent": intent_tags,  # ",".join(intent_tags),
@@ -204,7 +209,7 @@ def setup_openai(worker_id: int = 0) -> List[str]:
         openai.api_type = "azure"
         openai.api_version = "2022-12-01"
         openai.api_base = openai_bases[worker_id % len(openai_bases)].strip()
-    except KeyError:
+    except (KeyError, AttributeError):
         logging.warning("OPENAI_API_BASE_POOL is not specified in the environment")
     except AssertionError as msg:
         logging.error(
@@ -247,7 +252,31 @@ def get_geo_result(key, address):
         logging.warning(response.content)
 
 
-async def main(_):
+def preprocess_tweet(text: str) -> str:
+    mention_pattern = r"@\w+"
+    url_pattern = r"(\w+?://)?(?:www\.)?[-a-zA-Z0-9@:%._\\+~#=]{1,256}\.[a-zA-Z]{1,10}\b(?:[-a-zA-Z0-9()@:%_\\+.~#?&\\/=]*)"
+    # remove mentions
+    mentions_removed = re.sub(mention_pattern, " ", text)
+    # remove urls
+    url_removed = re.sub(url_pattern, "", mentions_removed)
+    # remove consequent spaces
+    return re.sub(r"\s+", " ", url_removed)
+
+
+def create_prompt(text: str, template: str, max_tokens: int) -> str:
+    template_token_count = GPTTokenizer.token_count(template)
+
+    preprocessed_text = preprocess_tweet(text)
+
+    truncated_text = GPTTokenizer.truncate(
+        preprocessed_text,
+        max_tokens=GPTTokenizer.MAX_TOKENS - max_tokens - template_token_count,
+    )
+
+    return template.format(ocr_input=truncated_text)
+
+
+def main(_):
     setup_openai(FLAGS.worker_id)
     if FLAGS.geo_location:
         geo_key = setup_geocoding(FLAGS.worker_id)
@@ -263,6 +292,9 @@ async def main(_):
         raise ValueError("Unknown info")
 
     logging.info(f"Engine {FLAGS.engine}")
+
+    loop = asyncio.get_event_loop()
+
     with open(FLAGS.input_file) as handle:
         # raw_data = [json.loads(line.strip()) for line in handle]
         raw_data = json.load(handle)
@@ -277,12 +309,12 @@ async def main(_):
 
     for index, row in tqdm(enumerate(raw_data)):
         # text_inputs.append(template.format(ocr_input=row["Tweet"]))
-        text_inputs.append(template.format(ocr_input=row["text_cleaned"]))
+        text_inputs.append(create_prompt(text=row["image_url"], template=template, max_tokens=FLAGS.max_tokens))
         raw_inputs.append(row)
 
         if (index + 1) % FLAGS.batch_size == 0 or index == len(raw_data) - 1:
             # to not throttle api key limits with parallel queries?
-            outputs = await query_with_retry(
+            outputs = loop.run_until_complete(query_with_retry(
                 text_inputs,
                 engine=FLAGS.engine,
                 max_tokens=FLAGS.max_tokens,
@@ -290,7 +322,7 @@ async def main(_):
                 presence_penalty=0,
                 stop="#END",
                 **completion_params,
-            )
+            ))
 
             with open(FLAGS.output_file, "a+") as handle:
                 for inp, output_lines in zip(raw_inputs, outputs):

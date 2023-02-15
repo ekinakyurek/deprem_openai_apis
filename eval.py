@@ -21,12 +21,12 @@ def main(_):
 
         for line in open(FILE_NAME):
             datum = json.loads(line)
-            y_true = datum["labels"]
-            y_pred = datum["detailed_intent_v2_json"]["intent"].split(",")
+            y_true = datum["label"]
+            y_pred = datum["detailed_intent_json"]["intent"] #.split(",")
             true_values.append(y_true)
             pred_values.append(y_pred)
             print(
-                datum["text"].replace("\n", ""), "\t", y_true, "\t", y_pred, file=handle
+                datum["image_url"].replace("\n", ""), "\t", y_true, "\t", y_pred, file=handle
             )
 
     binarizer = MultiLabelBinarizer().fit(true_values)

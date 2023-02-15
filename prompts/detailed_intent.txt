@@ -1,5 +1,6 @@
 # Find and categorize what people need from Turkish Tweets
 - Ignore links, address info. and hashtags.
+- possible tags: [RESCUE, POWER_SOURCE, HEALTH, CLOTHES, PORTABLE_TOILET, LOGISTICS, FOOD, BURIAL, SHELTER, WATER, HEATING, UNINFORMATIVE]
 
 Input: 
 """
@@ -70,7 +71,7 @@ Arkadaşlar Hataydan arkadaşım yazdı. Cenazeleri poşetle defnediyorlarmış.
 """
 
 Summary:
-People need [kefen] for burial, tags are [SHROUD]
+People need [kefen] for burial, tags are [BURIAL]
 #END
 
 Input: 
