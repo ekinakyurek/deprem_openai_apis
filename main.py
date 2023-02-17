@@ -61,9 +61,6 @@ async def convert(
     for tweet in inputs:
         text_inputs.append(converter.create_prompt(text=tweet, template=template, max_tokens=max_tokens))
 
-    print(text_inputs[0])
-    print(completion_params)
-    print(max_tokens)
     outputs = await converter.query_with_retry(
         text_inputs,
         api_key=api_key,
